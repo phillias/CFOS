@@ -1002,6 +1002,10 @@ describe("gateway model reasoning levels", () => {
     ["openai", "gpt-5.6-luna", "medium"],
     ["openai", "gpt-5.6-terra", "medium"],
     ["google", "gemini-3.6-flash", null],
+    // NIM speaks plain chat completions and takes no reasoning_effort (GLM models reason on
+    // their own), and pi's catalog has no entry for these models, so nothing is asked.
+    ["nvidia-nim", "z-ai/glm-5.3", null],
+    ["nvidia-nim", "z-ai/glm-5.3-flash", null],
     ["cloudflare", "@cf/moonshotai/kimi-k2.7-code", null],
     ["cloudflare", "@cf/zai-org/glm-5.2", null],
     ["cloudflare", "@cf/zai-org/glm-5.3-flash", null],

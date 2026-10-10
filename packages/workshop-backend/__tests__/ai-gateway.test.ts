@@ -578,7 +578,7 @@ describe("GatewayModels", () => {
   });
 
   describe("providers", () => {
-    const CATALOG_ORDER = ["cloudflare", "anthropic", "openai", "google"];
+    const CATALOG_ORDER = ["cloudflare", "anthropic", "openai", "google", "nvidia-nim"];
     const GEMINI = "gemini-3.6-flash";
     const NO_TOKEN = 'Provider "google" cannot use the Workers AI binding transport, and no ' +
         "CF_AI_GATEWAY_API_TOKEN is configured for the HTTPS one.";
@@ -627,17 +627,19 @@ describe("GatewayModels", () => {
             { provider: "anthropic", enabledBy: "environment", needsApiToken: false },
             { provider: "openai", needsApiToken: false },
             { provider: "google", enabledBy: "admin", needsApiToken: false },
+            { provider: "nvidia-nim", needsApiToken: false },
           ]);
       // The environment's listing comes first, so a provider it lists can't be turned off.
       expect(gatewayModels({ addedProviders: ["anthropic", "cloudflare"] }, "anthropic")
           .providerSettings.map(({ enabledBy }) => enabledBy))
-          .toEqual(["admin", "environment", undefined, undefined]);
+          .toEqual(["admin", "environment", undefined, undefined, undefined]);
     });
 
     it("reports a provider whose requests need a token the deployment lacks", () => {
-      // Whether the provider is on or off.
-      expect(needsToken(tokenless())).toEqual(["google"]);
-      expect(needsToken(tokenless(), ["google", "openai"])).toEqual(["google"]);
+      // Whether the provider is on or off. nvidia-nim rides the HTTPS transport alone, like
+      // google (HTTPS_ONLY_PROVIDERS), so a tokenless deployment lacks the token for it too.
+      expect(needsToken(tokenless())).toEqual(["google", "nvidia-nim"]);
+      expect(needsToken(tokenless(), ["google", "openai"])).toEqual(["google", "nvidia-nim"]);
       // With a token, over HTTPS alone or beside the binding, none does.
       expect(needsToken(gatewayEnv("anthropic,google"))).toEqual([]);
       expect(needsToken(env({
@@ -654,8 +656,8 @@ describe("GatewayModels", () => {
 
       const models = new GatewayModels(
           new AiGatewayConfig(tokenless()), { ...NO_CONFIG, addedProviders: ["google"] });
-      expect(models.providerSettings.at(-1)).toStrictEqual(
-          { provider: "google", enabledBy: "admin", needsApiToken: true });
+      expect(models.providerSettings.find(({ provider }) => provider === "google"))
+          .toStrictEqual({ provider: "google", enabledBy: "admin", needsApiToken: true });
       expect(ids(models.list())).toContain(GEMINI);
       expect(ids(models.list())).toContain("claude-opus-5-5");
 
