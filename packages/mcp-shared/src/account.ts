@@ -46,6 +46,7 @@ import {
   type OAuthTokens,
 } from "./oauth.js";
 import { fetchOptions, isAllowedUrl, sdkFetch, type FetchOptions } from "./fetch.js";
+import type { StaticHeader } from "./headers.js";
 import type { McpLog } from "./log.js";
 import { sameEndpoint } from "./scope.js";
 import { hostOf } from "./util.js";
@@ -349,10 +350,12 @@ export abstract class McpAccountBase<E extends AccountEnv, P = unknown>
    * Connects to `target`, or to the already-chosen server on reconnect.
    *
    * Probes unauthenticated first, since a 401 is how a server tells us both that it needs OAuth and
-   * where its authorization server is.
+   * where its authorization server is. `headers` carries the caller's static request credentials
+   * for the endpoint; a server that answers the probe with them needs no OAuth at all.
    */
   async beginConnect(
     initiationNonce: string, target: ConnectedServer | null,
+    headers?: readonly StaticHeader[],
   ): Promise<ConnectOutcome> {
     const existing = this.server();
     const server = resolveConnectTarget(existing, target);
@@ -374,10 +377,10 @@ export abstract class McpAccountBase<E extends AccountEnv, P = unknown>
     if (endpointChanged) {
       this.ctx.storage.kv.put("server", server);
       // The reconnect copies go too, or the flow would present the old endpoint's `client_id` to the
-      // new authorization server.
+      // new authorization server. The static headers are credentials for the old endpoint alone.
       for (const key of [
         "tokens", "mcpSessionId", "oauthClient", "oauthDiscovery", "oauthVerifier", "pendingAuth",
-        RECONNECT_CLIENT_KEY, RECONNECT_DISCOVERY_KEY,
+        "headers", RECONNECT_CLIENT_KEY, RECONNECT_DISCOVERY_KEY,
       ]) {
         this.ctx.storage.kv.delete(key);
       }
@@ -393,6 +396,14 @@ export abstract class McpAccountBase<E extends AccountEnv, P = unknown>
         serverHost: hostOf(server.endpoint),
       });
     }
+
+    // Static headers are stored before the probe so it runs with them: a header-authenticated
+    // server answers the probe 200 and connects without OAuth, while a 401 still starts the OAuth
+    // chain -- with the headers already in place for the authenticated probe and every later call.
+    // A reconnect passes no headers and keeps the stored ones: the endpoint is unchanged by
+    // definition. A failed attempt leaves them behind, harmless on a fresh account the abandonment
+    // alarm deletes and overwritten by the next attempt otherwise.
+    if (headers !== undefined) this.ctx.storage.kv.put("headers", [...headers]);
 
     const log = this.log().with({
       serverId: server.serverId,
@@ -463,11 +474,15 @@ export abstract class McpAccountBase<E extends AccountEnv, P = unknown>
   /**
    * Opens a client and performs `initialize`. Writes nothing: `complete` records the session id it
    * returns, live for a first connect and staged for a reconnect, once the flow is known to still
-   * be current.
+   * be current. Runs with the account's stored static headers, on the unauthenticated probe and on
+   * the OAuth-path probes alike.
    */
   protected async probe(server: ConnectedServer, accessToken: string | null): Promise<Probed> {
     const token = accessToken ?? (server.auth === "token" ? this.staticToken(server) : null);
-    const client = new McpClient(server.endpoint, async () => token, null, this.fetchOptions());
+    const client = new McpClient(server.endpoint, async () => token, null, {
+      ...this.fetchOptions(),
+      staticHeaders: this.ctx.storage.kv.get<StaticHeader[]>("headers") ?? [],
+    });
     const info = await client.initialize(clientName(this.env));
     return { info, sessionId: client.sessionId ?? null };
   }
@@ -906,6 +921,7 @@ export abstract class McpAccountBase<E extends AccountEnv, P = unknown>
       authorization,
       sessionId: this.ctx.storage.kv.get<string>("mcpSessionId") ?? null,
       generation,
+      headers: this.ctx.storage.kv.get<StaticHeader[]>("headers") ?? [],
     };
   }
 

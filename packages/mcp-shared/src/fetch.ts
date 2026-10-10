@@ -7,6 +7,7 @@
 // opt-in, since a caller forgetting to opt in is the failure mode.
 
 import { isBlockedHost } from "./endpoint.js";
+import type { StaticHeader } from "./headers.js";
 import type { FetchLike } from "@modelcontextprotocol/client";
 
 // Enough for the http->https and apex->www hops real deployments use. Discovery already tries
@@ -25,6 +26,11 @@ export type FetchOptions = {
   timeoutMs?: number;
   /** Absolute deadline shared by every request in a multi-page or retried operation. */
   deadline?: number;
+  /**
+   * Request credentials set by the account, sent with every request to the endpoint. Like
+   * `Authorization`, they are dropped when a redirect hop leaves the original origin.
+   */
+  staticHeaders?: readonly StaticHeader[];
 };
 
 /** The one environment variable this package reads. Each Worker's own `Env` satisfies it structurally. */
@@ -192,6 +198,9 @@ export async function guardedFetch(
       headers = new Headers(headers);
       headers.delete("Authorization");
       headers.delete("Mcp-Session-Id");
+      // The account's static headers are credentials in the same sense, scoped to the origin the
+      // user entered them for.
+      for (const header of options.staticHeaders ?? []) headers.delete(header.name);
     }
 
     // 303 means "fetch the result of this with GET", and browsers downgrade 301/302 on POST too.

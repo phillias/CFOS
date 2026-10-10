@@ -17,6 +17,7 @@ import {
 }
   from "./client.js";
 import { fetchOptions, type InsecureEnv } from "./fetch.js";
+import type { StaticHeader } from "./headers.js";
 import { MAX_TOOLS_PER_SERVER } from "./tools.js";
 
 /** The environment this module reads. Each Worker's own `Env` satisfies it structurally. */
@@ -47,6 +48,11 @@ export type McpConnection = {
    * work started before a reconnect cannot overwrite the new connection's tokens or session.
    */
   generation: number;
+  /**
+   * The account's static request headers for the endpoint, applied by the client to every request
+   * and dropped on cross-origin redirect hops. Header credentials, like the bearer above.
+   */
+  headers?: readonly StaticHeader[];
 };
 
 /**
@@ -109,6 +115,7 @@ export async function withClient<T>(
     }, sessionId, {
       ...fetchOptions(env),
       deadline: options.deadline,
+      staticHeaders: connection.headers,
     });
   let persistedSessionId = sessionId;
 

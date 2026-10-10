@@ -397,11 +397,17 @@ export class McpClient {
     this.#fetchOptions = fetchOptions.timeoutMs !== undefined && fetchOptions.deadline === undefined
       ? { ...fetchOptions, deadline: Date.now() + fetchOptions.timeoutMs }
       : fetchOptions;
+    // Kept so `#quoteServerText` can recognise these values if a server echoes them back.
+    this.#staticSecrets = (this.#fetchOptions.staticHeaders ?? []).map(header => header.value);
   }
 
   // The credential most recently sent, kept only so it can be recognised if it comes back. See
   // `#quoteServerText`.
   #lastCredential: string | null = null;
+
+  // The values of the account's static headers, which are secrets in the same sense. See
+  // `#quoteServerText`.
+  #staticSecrets: readonly string[] = [];
 
   async #headers(method: string): Promise<Headers> {
     const headers = new Headers({
@@ -413,6 +419,11 @@ export class McpClient {
     this.#lastCredential = authorization;
     if (authorization) headers.set("Authorization", `Bearer ${authorization}`);
     if (this.sessionId) headers.set("Mcp-Session-Id", this.sessionId);
+    // The account's own credentials for this endpoint, validated at connect time. Applied last so
+    // nothing above can be overridden by them and they cannot be overridden here.
+    for (const header of this.#fetchOptions.staticHeaders ?? []) {
+      headers.set(header.name, header.value);
+    }
     return headers;
   }
 
@@ -519,16 +530,19 @@ export class McpClient {
   // Prepares text the server wrote for inclusion in an error message.
   //
   // These messages are logged and may be dispatched to the issue reporter, so beyond the shaping
-  // `safeServerText` does, the credential just sent is redacted if it appears. A server that echoes
-  // the request's `Authorization` back inside an error -- whether carelessly or deliberately -- would
-  // otherwise have this Worker copy its own bearer token into an indexed log field. The token is the
-  // one secret whose value is known here, so it is the one that can be removed with certainty.
+  // `safeServerText` does, the credentials just sent are redacted if they appear. A server that
+  // echoes the request's `Authorization` back inside an error -- whether carelessly or
+  // deliberately -- would otherwise have this Worker copy its own bearer token into an indexed log
+  // field. The bearer and the account's static header values are the secrets whose values are
+  // known here, so they are the ones that can be removed with certainty.
   //
   // Redacted before shaping, never after: `safeServerText` caps the text, and a token straddling
   // that cap would lose the tail that made it matchable while the head stayed in the message.
   #quoteServerText(text: unknown): string {
     if (typeof text !== "string") return "no reason given";
-    return safeServerText(redactSecrets(text, [this.#lastCredential])) ?? "no reason given";
+    return safeServerText(
+      redactSecrets(text, [this.#lastCredential, ...this.#staticSecrets]),
+    ) ?? "no reason given";
   }
 
   async #notify(method: string, params?: unknown): Promise<void> {
