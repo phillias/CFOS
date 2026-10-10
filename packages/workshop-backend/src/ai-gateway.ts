@@ -17,7 +17,7 @@ const QUICK_MODEL_ID = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
  * Ollama has none, so a model added under it could never run.
  */
 const GATEWAY_PROVIDERS: ReadonlySet<string> =
-    new Set<AiModelProvider>(["anthropic", "openai", "google", "cloudflare"]);
+    new Set<AiModelProvider>(["anthropic", "openai", "google", "cloudflare", "nvidia-nim"]);
 
 /** Throws unless AI Gateway serves `provider`. */
 export function assertGatewayProvider(provider: string): void {

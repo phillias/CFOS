@@ -23,6 +23,7 @@ const MODELS_DEV_PROVIDER_IDS: Record<AiModelProvider, string | null> = {
   openai: 'openai',
   google: 'google',
   cloudflare: 'cloudflare-workers-ai',
+  'nvidia-nim': 'nvidia',
   ollama: null,
 }
 

@@ -37,6 +37,7 @@ const API_TOKEN_PLACEHOLDERS: Record<AiModelProvider, string> = {
   openai: 'sk-...',
   google: 'AIza...',
   cloudflare: 'Cloudflare API token',
+  'nvidia-nim': 'nvapi-...',
   ollama: '(optional)',
 }
 

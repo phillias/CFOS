@@ -10,6 +10,7 @@ export const PROVIDER_LABELS: Record<AiModelProvider, string> = {
   openai: 'OpenAI',
   google: 'Google',
   cloudflare: 'Cloudflare Workers AI',
+  'nvidia-nim': 'NVIDIA NIM',
   ollama: 'Ollama',
 }
 
