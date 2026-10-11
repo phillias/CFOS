@@ -962,7 +962,8 @@ export type GatekeeperVendorInfo = {
   unavailable?: boolean;
 };
 
-/** Maximum length (characters) of the admin-authored agent system-prompt instructions. */
+/** Maximum length (characters) of agent system-prompt instructions: both the admin-authored
+ * instance instructions and each gadget's own persona (see GadgetClient.setAgentInstructions). */
 export const MAX_INSTANCE_INSTRUCTIONS_LENGTH = 8000;
 
 /** Maximum length (characters) of the admin-authored site name shown next to the top-bar logo. */
