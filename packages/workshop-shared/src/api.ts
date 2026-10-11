@@ -962,7 +962,8 @@ export type GatekeeperVendorInfo = {
   unavailable?: boolean;
 };
 
-/** Maximum length (characters) of the admin-authored agent system-prompt instructions. */
+/** Maximum length (characters) of agent system-prompt instructions: both the admin-authored
+ * instance instructions and each gadget's own persona (see GadgetClient.setAgentInstructions). */
 export const MAX_INSTANCE_INSTRUCTIONS_LENGTH = 8000;
 
 /** Maximum length (characters) of the admin-authored site name shown next to the top-bar logo. */
@@ -5157,6 +5158,25 @@ export type GadgetExportFormat = {
  * sharing, actions, blueprint listing) stay on Overseer; this covers the per-gadget surface.
  */
 export interface GadgetClient extends WorkpieceClient {
+  // --- Agent instructions (persona) ---
+
+  /**
+   * Get the workspace owner's freeform instructions ("persona") for how the workshop agent should
+   * work on this gadget, or "" if none have been set. These are injected into the agent's system
+   * prompt within this gadget's section; see setAgentInstructions().
+   */
+  getAgentInstructions(): Promise<string>;
+
+  /**
+   * Set this gadget's agent instructions ("persona"): freeform text injected into the workshop
+   * agent's system prompt within this gadget's section. Pass "" to clear. Leading and trailing
+   * whitespace is trimmed. Rejects text over MAX_INSTANCE_INSTRUCTIONS_LENGTH characters.
+   *
+   * This is gadget metadata, not code: it can be changed at any time without editing the gadget,
+   * and takes effect for chats that start (or compact) afterwards.
+   */
+  setAgentInstructions(instructions: string): Promise<void>;
+
   /**
    * Get the gadget's deployed UI code, to be run inside an iframe sandbox.
    *

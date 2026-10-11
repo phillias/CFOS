@@ -1,6 +1,6 @@
 import { RpcCompatible, RpcStub, RpcTarget } from "capnweb";
 import { validateRpc } from "capnweb-validate";
-import { Overseer, GadgetMetadata, UiBundle, WorkpieceId, WorkpieceSummary, WorkpiecesSubscriber, GadgetClient, GadgetBindingInfo, GatekeeperClient, ActionLogEntry, ActionsSubscriber, ActionHistoryFilter, ActionHistoryPage, ChatGadgetPinRecord, MainlineMergeGadget, ChatCodeBase, ChatGadgetPinState, CodeChangeSubmission, CommitInfo, FileAtCommit, MAX_READ_FILES_PER_CALL, TreeNode, MergeChangesResult, AiChatMetadata, AiChatMessage, AiChatHistoryPage, AiChatSubscriber, AiChatAuthorInfo, AiModelConfig, AiChatMessageBody, AgentSpawnerConfig, ConsoleLogSubscriber, ConsoleLogEvent, CapsuleSpecifier, CollaboratorInfo, CollaboratorRole, AffectedCollaborator, ShareLinkInfo, GatekeeperCreationSpec, ObserverConfigCallback, ObserverBindingNeed, ObserverBindingFailure, BlueprintBindingAnnotation, BlueprintBinding, BlueprintMetadata, BlueprintOutput, BlueprintMerge, ApplyBlueprintResult, GadgetUpstream, MessageFormatRef, isOutputIcon, SpawnerEnvTarget, BlueprintGadgetSummary, AiChatStreamEvent, BlueprintScreenshotUpload, BLUEPRINT_SCREENSHOT_R2_PREFIX, blueprintScreenshotUrl, ChatAttachmentUpload, ChatAttachmentHandle, ChatAttachmentRef, BoundHookInfo, PreApprovableAction, PresenceParticipant, PresenceSubscriber, SlashCommandChoice, SlashCommandRequest, validateBindingName, createOpenGadgetError, OPEN_GADGET_ERROR_CODES, resolveSiteName } from '@gadgets/workshop-shared/api';
+import { Overseer, GadgetMetadata, UiBundle, WorkpieceId, WorkpieceSummary, WorkpiecesSubscriber, GadgetClient, GadgetBindingInfo, GatekeeperClient, ActionLogEntry, ActionsSubscriber, ActionHistoryFilter, ActionHistoryPage, ChatGadgetPinRecord, MainlineMergeGadget, ChatCodeBase, ChatGadgetPinState, CodeChangeSubmission, CommitInfo, FileAtCommit, MAX_READ_FILES_PER_CALL, TreeNode, MergeChangesResult, AiChatMetadata, AiChatMessage, AiChatHistoryPage, AiChatSubscriber, AiChatAuthorInfo, AiModelConfig, AiChatMessageBody, AgentSpawnerConfig, ConsoleLogSubscriber, ConsoleLogEvent, CapsuleSpecifier, CollaboratorInfo, CollaboratorRole, AffectedCollaborator, ShareLinkInfo, GatekeeperCreationSpec, ObserverConfigCallback, ObserverBindingNeed, ObserverBindingFailure, BlueprintBindingAnnotation, BlueprintBinding, BlueprintMetadata, BlueprintOutput, BlueprintMerge, ApplyBlueprintResult, GadgetUpstream, MessageFormatRef, isOutputIcon, SpawnerEnvTarget, BlueprintGadgetSummary, AiChatStreamEvent, BlueprintScreenshotUpload, BLUEPRINT_SCREENSHOT_R2_PREFIX, blueprintScreenshotUrl, ChatAttachmentUpload, ChatAttachmentHandle, ChatAttachmentRef, BoundHookInfo, PreApprovableAction, PresenceParticipant, PresenceSubscriber, SlashCommandChoice, SlashCommandRequest, validateBindingName, createOpenGadgetError, OPEN_GADGET_ERROR_CODES, resolveSiteName, MAX_INSTANCE_INSTRUCTIONS_LENGTH } from '@gadgets/workshop-shared/api';
 import { applyCodeChange, changedGadgets, codeChangeSerializedSize, composeCodeChange,
   transformCodeChange, validateCodeChangeContent, validateCodeChangeSchema,
   type CodeContent, type CodeChange } from "@gadgets/workshop-shared/code-change";
@@ -6883,6 +6883,7 @@ class OverseerImpl implements AgentHooks {
       title: gadget.title,
       isDefault: gadget.id === this.defaultGadgetId,
       output: gadget.output,
+      agentInstructions: gadget.agentInstructions,
       bindings: this.visibleBindings(gadget, forChatId).map(([name, edge]) => ({
         name,
         title: this.storage.gatekeepers.get(edge.target)?.resourceTitle || "(title unavailable)",
@@ -12102,6 +12103,21 @@ class GadgetClientImpl extends RpcTarget implements GadgetClient {
     this.impl.storage.gadgets.put(record);
   }
 
+  async getAgentInstructions(): Promise<string> {
+    return this.impl.getGadgetRecord(this.id).agentInstructions ?? "";
+  }
+
+  async setAgentInstructions(instructions: string): Promise<void> {
+    if (instructions.length > MAX_INSTANCE_INSTRUCTIONS_LENGTH) {
+      throw new Error(`Instructions too long (max ${MAX_INSTANCE_INSTRUCTIONS_LENGTH} characters).`);
+    }
+    let record = this.impl.getGadgetRecord(this.id);
+    // Trim at write time and clear on empty, so a stored field is always absent or non-empty text
+    // -- readers (the system prompt, getAgentInstructions) never see whitespace-only blobs.
+    record.agentInstructions = instructions.trim() || undefined;
+    this.impl.storage.gadgets.put(record);
+  }
+
   async remove(): Promise<void> {
     return this.impl.removeWorkpiece(this.id);
   }
@@ -12414,6 +12430,8 @@ class UseGadgetClientInterface extends RpcTarget implements GadgetClient {
   // --- Denied methods (build-only) ---
 
   async setTitle(_title: string): Promise<void> { this.#deny(); }
+  async getAgentInstructions(): Promise<string> { this.#deny(); }
+  async setAgentInstructions(_instructions: string): Promise<void> { this.#deny(); }
   async remove(): Promise<void> { this.#deny(); }
   async listBindings(): Promise<GadgetBindingInfo[]> { this.#deny(); }
   async getBinding(_name: string): Promise<GatekeeperClient<any> | null> { this.#deny(); }

@@ -221,6 +221,11 @@ export type AgentGadgetInfo = {
   bindings: {name: string, title: string, target: WorkpieceId}[];
   /** What instantiating this gadget's blueprint produces, when it came from one that declares it. */
   output?: BlueprintOutput;
+  /**
+   * The workspace owner's freeform instructions ("persona") for this gadget, if any: guidance
+   * injected into this gadget's section of the system prompt (see GadgetRecord.agentInstructions).
+   */
+  agentInstructions?: string;
 };
 
 /**
@@ -2927,6 +2932,13 @@ async function runAgentPass(
           lines.push(
               `This is the workspace's default gadget: file tools operate on it when their ` +
               `\`workpiece\` parameter is omitted.`);
+        }
+        if (info.agentInstructions) {
+          lines.push(
+              `The owner of this workspace has provided the following additional instructions ` +
+              `for working on this gadget. Follow them unless they conflict with the user's ` +
+              `safety or the instructions above.\n` +
+              `<gadget_instructions>\n${info.agentInstructions}\n</gadget_instructions>`);
         }
         if (files.length == 0) {
           lines.push(`As of the start of this session, this gadget had no code files.`);
