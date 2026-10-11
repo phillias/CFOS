@@ -52,6 +52,7 @@ import {
 } from "@gadgets/mcp-shared/scope";
 import { validateCustomEndpoint } from "@gadgets/mcp-shared/endpoint";
 import { fetchOptions } from "@gadgets/mcp-shared/fetch";
+import { parseStaticHeaders, type StaticHeader } from "@gadgets/mcp-shared/headers";
 import {
   connectHandoffPageHtml,
   htmlResponse,
@@ -110,7 +111,7 @@ export default {
 
         // A reconnect already knows its endpoint. Ignore a stale or malicious replacement URL.
         if (await account.hasEndpoint()) {
-          return continueConnect(account, initiationNonce, null, env, path);
+          return continueConnect(account, initiationNonce, null, [], env, path);
         }
         if (request.method === "GET") {
           if (!(await account.isAwaitingSelection(initiationNonce))) {
@@ -125,11 +126,20 @@ export default {
           return new Response("Invalid form submission.", { status: 400 });
         }
         return continueConnect(
-          account, initiationNonce, String(form.get("url") ?? ""), env, path);
+          account, initiationNonce, String(form.get("url") ?? ""), formStaticHeaders(form), env,
+          path);
       },
     });
   },
 };
+
+// Zips the connect form's repeated `headerName`/`headerValue` fields into rows, by index. Empty
+// optional rows arrive as blank pairs and are dropped by `parseStaticHeaders`.
+function formStaticHeaders(form: URLSearchParams): { name: string; value: string }[] {
+  const names = form.getAll("headerName");
+  const values = form.getAll("headerValue");
+  return names.map((name, index) => ({ name, value: values[index] ?? "" }));
+}
 
 // Validates the endpoint the user typed, then hands off to the account DO, which owns every
 // credential. `endpointUrl` is null on a reconnect.
@@ -137,15 +147,21 @@ async function continueConnect(
   account: DurableObjectStub<McpAccount>,
   initiationNonce: string,
   endpointUrl: string | null,
+  headerEntries: { name: string; value: string }[],
   env: Env,
   formPath: string,
 ): Promise<Response> {
   let target: ConnectedServer | null = null;
+  let headers: StaticHeader[] | undefined;
 
   if (endpointUrl !== null) {
     const validated = validateCustomEndpoint(env, endpointUrl);
     if (!validated.ok) {
       return htmlResponse(connectFormHtml(formPath, validated.reason), 400);
+    }
+    const parsed = parseStaticHeaders(headerEntries);
+    if (!parsed.ok) {
+      return htmlResponse(connectFormHtml(formPath, parsed.reason), 400);
     }
     // `serverName` is a placeholder until the handshake reports the server's own name, and `auth` is
     // a guess that `beginConnect` corrects to `"none"` if the endpoint turns out to be public.
@@ -156,11 +172,12 @@ async function continueConnect(
       provenance: "user",
       auth: "oauth",
     };
+    headers = parsed.headers;
   }
 
   let outcome: ConnectOutcome;
   try {
-    outcome = await account.beginConnect(initiationNonce, target);
+    outcome = await account.beginConnect(initiationNonce, target, headers);
   } catch (err) {
     logger.warn("connect failed", { event: "connect.failed", error: err });
     return htmlResponse(connectFormHtml(

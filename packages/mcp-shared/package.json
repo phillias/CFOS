@@ -12,6 +12,7 @@
     "./endpoint": "./src/endpoint.ts",
     "./fetch": "./src/fetch.ts",
     "./facet": "./src/facet.ts",
+    "./headers": "./src/headers.ts",
     "./html": "./src/html.ts",
     "./http": "./src/http.ts",
     "./log": "./src/log.ts",

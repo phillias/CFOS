@@ -55,6 +55,10 @@ overrides:
   # - @lezer/markdown is a deep transitive of @codemirror/lang-markdown.
   '@types/node': 26.1.0
   '@lezer/markdown': 1.6.4
+  # This host (arm64, glibc 2.31) can't load rollup's native arm64 binary, which is built
+  # against glibc 2.34, and vp loads every package's vite config before any build can run.
+  # The WASM build is the arch-independent drop-in rollup ships for exactly this.
+  rollup: "npm:@rollup/wasm-node@4.62.3"
 
 # Reject dependency versions published within this many minutes (24h), matching the
 # CI supply-chain policy so local installs can't commit a too-fresh lockfile.

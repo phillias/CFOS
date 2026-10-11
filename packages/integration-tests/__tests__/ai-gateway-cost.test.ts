@@ -389,6 +389,7 @@ it("an admin turns on a provider beside the environment's, and tests what one an
   expect(before.providerSettings).toEqual([
     { provider: "cloudflare", enabledBy: "environment", needsApiToken: false },
     offProvider("anthropic"), offProvider("openai"), offProvider("google"),
+    offProvider("nvidia-nim"),
   ]);
   expect(await api.getAiConfig()).toMatchObject({ enabledProviders: ["cloudflare"] });
   await expect(api.addModel(mine, mineConfig))
@@ -405,7 +406,7 @@ it("an admin turns on a provider beside the environment's, and tests what one an
       providerSettings: [
         before.providerSettings[0],
         { provider: "anthropic", enabledBy: "admin", needsApiToken: false },
-        offProvider("openai"), offProvider("google"),
+        offProvider("openai"), offProvider("google"), offProvider("nvidia-nim"),
       ],
       models: on.models,
     });

@@ -246,9 +246,11 @@ function workersAiCompat(catalog: CatalogEntry | undefined): OpenAICompletionsCo
 // over the AI binding (https://workers-binding.ai/ai-gateway/gateways/{gateway}); each
 // provider's native API is exposed under the same per-provider path on either. AI Gateway also
 // offers a unified OpenAI-compat
-// translation layer (/compat), which we deliberately never use: we already speak every
-// provider's native API, and the translation drops provider features pi relies on (extended
-// thinking, Anthropic cache_control prompt caching, the OpenAI Responses API). Billing --
+// translation layer (/compat), which we deliberately never use for native providers: we already
+// speak every provider's native API, and the translation drops provider features pi relies on
+// (extended thinking, Anthropic cache_control prompt caching, the OpenAI Responses API). The one
+// exception is custom providers like nvidia-nim, which have no per-provider route and are only
+// reachable through /compat. Billing --
 // including unified billing on a user's own gateway -- is orthogonal to which API a request
 // speaks. Returns undefined for providers AI Gateway cannot serve (ollama).
 function gatewayNativeModel(config: AiModelConfig, gatewayUrl: string): Model<Api> | undefined {
@@ -323,6 +325,33 @@ function gatewayNativeModel(config: AiModelConfig, gatewayUrl: string): Model<Ap
         // requests are otherwise sent no effort at all.
         ...(config.reasoning !== undefined ? { thinkingLevelMap: catalog?.thinkingLevelMap } : {}),
         compat: workersAiCompat(catalog),
+      };
+    case "nvidia-nim":
+      // NVIDIA's hosted NIM endpoint, registered on this account as the custom provider
+      // "nvidia-nim" (integrate.api.nvidia.com). Custom providers have no per-provider gateway
+      // route, so they are only reachable through the gateway's /compat unified endpoint, with
+      // the custom-provider namespace in the model ID. NIM speaks plain chat completions: no
+      // Responses API, no store, and it takes no reasoning_effort (GLM models reason on their
+      // own).
+      return {
+        id: `custom-nvidia-nim/${config.model}`,
+        name: catalog?.name ?? config.model,
+        api: "openai-completions",
+        provider: "nvidia-nim",
+        baseUrl: `${gatewayUrl}/compat`,
+        reasoning: catalog?.reasoning ?? false,
+        input: catalog?.input ?? ["text"],
+        cost: catalog?.cost ?? ZERO_COST,
+        ...window,
+        ...(config.reasoning !== undefined ? { thinkingLevelMap: catalog?.thinkingLevelMap } : {}),
+        compat: {
+          supportsStore: false,
+          supportsDeveloperRole: false,
+          supportsLongCacheRetention: false,
+          ...(catalog?.compat as OpenAICompletionsCompat | undefined),
+          sendSessionAffinityHeaders: false,
+          supportsReasoningEffort: false,
+        },
       };
     default:
       return undefined;
@@ -855,6 +884,31 @@ function getModelDirect(config: AiModelConfig, sessionAffinity?: string): ModelH
           ...window,
           thinkingLevelMap: catalog?.thinkingLevelMap,
           compat: catalog?.compat,
+        },
+        ...directAuth(config, "Authorization"),
+        sessionAffinity,
+      });
+    case "nvidia-nim":
+      // NVIDIA's hosted NIM endpoint: plain chat completions with a Bearer nvapi-... key.
+      return makeHandle({
+        model: {
+          id: config.model,
+          name: catalog?.name ?? config.model,
+          api: "openai-completions",
+          provider: "nvidia-nim",
+          baseUrl: config.apiUrl ?? "https://integrate.api.nvidia.com/v1",
+          reasoning: catalog?.reasoning ?? false,
+          input: catalog?.input ?? ["text"],
+          cost: catalog?.cost ?? ZERO_COST,
+          ...window,
+          compat: {
+            supportsStore: false,
+            supportsDeveloperRole: false,
+            supportsLongCacheRetention: false,
+            ...(catalog?.compat as OpenAICompletionsCompat | undefined),
+            sendSessionAffinityHeaders: false,
+            supportsReasoningEffort: false,
+          },
         },
         ...directAuth(config, "Authorization"),
         sessionAffinity,

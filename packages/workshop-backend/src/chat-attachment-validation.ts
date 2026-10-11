@@ -31,12 +31,14 @@ const isTextImageOrPdfMime = (mimeType: string) =>
 // pi-ai encodes only text and image content parts, so text + images are universal. PDFs ride an
 // image part and are bridged to a provider's native document input where one exists: Gemini takes
 // application/pdf inline data as-is, and Anthropic/OpenAI payloads are rewritten in flight (see
-// chat-attachment-pdf.ts). Workers AI and Ollama chat endpoints have no document input at all.
+// chat-attachment-pdf.ts). Workers AI, Ollama, and NVIDIA NIM chat endpoints have no document
+// input at all.
 const ATTACHMENT_SUPPORT_BY_PROVIDER = {
   anthropic: isTextImageOrPdfMime,
   openai: isTextImageOrPdfMime,
   google: isTextImageOrPdfMime,
   cloudflare: isTextOrImageMime,
+  "nvidia-nim": isTextOrImageMime,
   ollama: isTextOrImageMime,
 } satisfies Record<AiModelProvider, (mimeType: string) => boolean>;
 

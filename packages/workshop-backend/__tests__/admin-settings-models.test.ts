@@ -793,15 +793,16 @@ describe("AdminSettings gateway providers", () => {
   const OPENAI_OFF = { provider: "openai", needsApiToken: false };
   const OPENAI_ON = { ...OPENAI_OFF, enabledBy: "admin" };
   const GOOGLE_OFF = { provider: "google", needsApiToken: false };
+  const NVIDIA_OFF = { provider: "nvidia-nim", needsApiToken: false };
 
   it("turns a provider on and off, storing and mirroring each change", async () => {
     const { inDo, put, mirror } = adminSettings();
     expect(await providers(inDo)).toStrictEqual(
-        { stored: [], view: [...FLOOR, OPENAI_OFF, GOOGLE_OFF] });
+        { stored: [], view: [...FLOOR, OPENAI_OFF, GOOGLE_OFF, NVIDIA_OFF] });
 
     await inDo(admin => admin.setGatewayProviderEnabled("openai", true));
     expect(await providers(inDo)).toStrictEqual(
-        { stored: ["openai"], view: [...FLOOR, OPENAI_ON, GOOGLE_OFF] });
+        { stored: ["openai"], view: [...FLOOR, OPENAI_ON, GOOGLE_OFF, NVIDIA_OFF] });
     expect(put).toHaveBeenCalledTimes(1);
     expect(put.mock.calls[0]![0]).toBe(".adminConfig");
     expect(JSON.parse(mirror.current!).addedProviders).toStrictEqual(["openai"]);
@@ -818,7 +819,7 @@ describe("AdminSettings gateway providers", () => {
 
     await inDo(admin => admin.setGatewayProviderEnabled("openai", false));
     expect(await providers(inDo)).toStrictEqual(
-        { stored: [], view: [...FLOOR, OPENAI_OFF, GOOGLE_OFF] });
+        { stored: [], view: [...FLOOR, OPENAI_OFF, GOOGLE_OFF, NVIDIA_OFF] });
     expect(JSON.parse(mirror.current!).addedProviders).toStrictEqual([]);
     const off = (await inDo(admin => admin.getSettings("admin"))).gatewayModels!;
     expect(off.providers).toEqual(["cloudflare", "anthropic"]);
@@ -911,6 +912,9 @@ describe("AdminSettings gateway providers", () => {
       const { gatewayModels } = await inDo(admin => admin.getSettings("admin"));
       expect(gatewayModels!.providerSettings).toStrictEqual([
         ...FLOOR, OPENAI_OFF, { provider: "google", enabledBy: "admin", needsApiToken: true },
+        // Like google, nvidia-nim rides no Workers AI binding, so without a
+        // gateway token its requests cannot be authenticated either.
+        { provider: "nvidia-nim", needsApiToken: true },
       ]);
       expect(gatewayModels!.models.map(model => model.id)).toContain("gemini-3.6-flash");
 
