@@ -1,0 +1,300 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/work/packages/workshop-backend[39m
+
+Sourcemap for "/work/node_modules/.pnpm/standardwebhooks@1.1.1/node_modules/standardwebhooks/dist/index.js" points to missing source files
+Sourcemap for "/work/node_modules/.pnpm/@google+genai@2.21.0_supports-color@10.2.2/node_modules/@google/genai/dist/web/index.mjs" points to missing source files
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'instance.instructions.read.failed'[39m,
+  error: [32m"TypeError: Cannot read properties of undefined (reading 'get')"[39m,
+  errorStack: [32m"TypeError: Cannot read properties of undefined (reading 'get')\n"[39m +
+    [32m'    at readAdminConfig (/work/packages/workshop-backend/src/admin-config.ts:370:48)\n'[39m +
+    [32m'    at OverseerImpl.getInstanceInstructions (/work/packages/workshop-backend/src/overseer.ts:8627:21)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2856:69)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:82:31\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to read instance instructions'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'formats.agent.list.failed'[39m,
+  error: [32m"TypeError: Cannot read properties of undefined (reading 'get')"[39m,
+  errorStack: [32m"TypeError: Cannot read properties of undefined (reading 'get')\n"[39m +
+    [32m'    at readAdminConfig (/work/packages/workshop-backend/src/admin-config.ts:370:48)\n'[39m +
+    [32m'    at OverseerImpl.#listStandardFormats (/work/packages/workshop-backend/src/overseer.ts:8844:53)\n'[39m +
+    [32m'    at OverseerImpl.describeStandardFormats (/work/packages/workshop-backend/src/overseer.ts:8823:30)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2987:39)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:82:31\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to list standard formats for the agent'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'connectable.vendors.list.failed'[39m,
+  error: [32m'TypeError: this[#ownerUserStub](...).listGatekeeperVendors is not a function'[39m,
+  errorStack: [32m'TypeError: this[#ownerUserStub](...).listGatekeeperVendors is not a function\n'[39m +
+    [32m'    at /work/packages/workshop-backend/src/overseer.ts:8615:37\n'[39m +
+    [32m'    at retryOnDoReset (/work/packages/workshop-backend/src/do-retry.ts:121:18)\n'[39m +
+    [32m'    at OverseerImpl.#listGatekeeperVendorsCached (/work/packages/workshop-backend/src/overseer.ts:8614:19)\n'[39m +
+    [32m'    at OverseerImpl.listConnectableVendors (/work/packages/workshop-backend/src/overseer.ts:8647:32)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2991:42)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:82:31\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to list connectable vendors'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'gadget.last.active.bump.failed'[39m,
+  error: [32m'TypeError: owner.setGadgetLastActive is not a function'[39m,
+  errorStack: [32m'TypeError: owner.setGadgetLastActive is not a function\n'[39m +
+    [32m'    at OverseerImpl.#bumpLastActiveImpl (/work/packages/workshop-backend/src/overseer.ts:5834:19)\n'[39m +
+    [32m'    at OverseerImpl.bumpLastActive (/work/packages/workshop-backend/src/overseer.ts:5810:12)\n'[39m +
+    [32m'    at OverseerImpl.getChatTimestamp (/work/packages/workshop-backend/src/overseer.ts:6157:10)\n'[39m +
+    [32m'    at OverseerImpl.addChatMessages (/work/packages/workshop-backend/src/overseer.ts:8366:25)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/src/overseer.ts:3122:14\n'[39m +
+    [32m'    at Object.transaction (/work/packages/typed-storage/src/index.ts:742:22)\n'[39m +
+    [32m'    at OverseerImpl.commitAgentStep (/work/packages/workshop-backend/src/overseer.ts:3056:27)\n'[39m +
+    [32m'    at emit (/work/packages/workshop-backend/src/agent.ts:4039:25)\n'[39m +
+    [32m'    at runLoop (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:287:10)\n'[39m +
+    [32m'    at runAgentLoopContinue (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:149:2)'[39m,
+  message: [32m'failed to bump gadget last-active on user DO'[39m
+}
+{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'gadget.last.active.bump.failed'[39m,
+  error: [32m'TypeError: owner.setGadgetLastActive is not a function'[39m,
+  errorStack: [32m'TypeError: owner.setGadgetLastActive is not a function\n'[39m +
+    [32m'    at OverseerImpl.#bumpLastActiveImpl (/work/packages/workshop-backend/src/overseer.ts:5834:19)\n'[39m +
+    [32m'    at OverseerImpl.bumpLastActive (/work/packages/workshop-backend/src/overseer.ts:5810:12)\n'[39m +
+    [32m'    at OverseerImpl.getChatTimestamp (/work/packages/workshop-backend/src/overseer.ts:6157:10)\n'[39m +
+    [32m'    at OverseerImpl.addChatMessages (/work/packages/workshop-backend/src/overseer.ts:8387:28)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/src/overseer.ts:3122:14\n'[39m +
+    [32m'    at Object.transaction (/work/packages/typed-storage/src/index.ts:742:22)\n'[39m +
+    [32m'    at OverseerImpl.commitAgentStep (/work/packages/workshop-backend/src/overseer.ts:3056:27)\n'[39m +
+    [32m'    at emit (/work/packages/workshop-backend/src/agent.ts:4039:25)\n'[39m +
+    [32m'    at runLoop (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:287:10)\n'[39m +
+    [32m'    at runAgentLoopContinue (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:149:2)'[39m,
+  message: [32m'failed to bump gadget last-active on user DO'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'instance.instructions.read.failed'[39m,
+  error: [32m"TypeError: Cannot read properties of undefined (reading 'get')"[39m,
+  errorStack: [32m"TypeError: Cannot read properties of undefined (reading 'get')\n"[39m +
+    [32m'    at readAdminConfig (/work/packages/workshop-backend/src/admin-config.ts:370:48)\n'[39m +
+    [32m'    at OverseerImpl.getInstanceInstructions (/work/packages/workshop-backend/src/overseer.ts:8627:21)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2856:69)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:83:32\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to read instance instructions'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'formats.agent.list.failed'[39m,
+  error: [32m"TypeError: Cannot read properties of undefined (reading 'get')"[39m,
+  errorStack: [32m"TypeError: Cannot read properties of undefined (reading 'get')\n"[39m +
+    [32m'    at readAdminConfig (/work/packages/workshop-backend/src/admin-config.ts:370:48)\n'[39m +
+    [32m'    at OverseerImpl.#listStandardFormats (/work/packages/workshop-backend/src/overseer.ts:8844:53)\n'[39m +
+    [32m'    at OverseerImpl.describeStandardFormats (/work/packages/workshop-backend/src/overseer.ts:8823:30)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2987:39)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:83:32\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to list standard formats for the agent'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'connectable.vendors.list.failed'[39m,
+  error: [32m'TypeError: this[#ownerUserStub](...).listGatekeeperVendors is not a function'[39m,
+  errorStack: [32m'TypeError: this[#ownerUserStub](...).listGatekeeperVendors is not a function\n'[39m +
+    [32m'    at /work/packages/workshop-backend/src/overseer.ts:8615:37\n'[39m +
+    [32m'    at retryOnDoReset (/work/packages/workshop-backend/src/do-retry.ts:121:18)\n'[39m +
+    [32m'    at OverseerImpl.#listGatekeeperVendorsCached (/work/packages/workshop-backend/src/overseer.ts:8614:19)\n'[39m +
+    [32m'    at OverseerImpl.listConnectableVendors (/work/packages/workshop-backend/src/overseer.ts:8647:32)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2991:42)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:83:32\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to list connectable vendors'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'gadget.last.active.bump.failed'[39m,
+  error: [32m'TypeError: owner.setGadgetLastActive is not a function'[39m,
+  errorStack: [32m'TypeError: owner.setGadgetLastActive is not a function\n'[39m +
+    [32m'    at OverseerImpl.#bumpLastActiveImpl (/work/packages/workshop-backend/src/overseer.ts:5834:19)\n'[39m +
+    [32m'    at OverseerImpl.bumpLastActive (/work/packages/workshop-backend/src/overseer.ts:5810:12)\n'[39m +
+    [32m'    at OverseerImpl.getChatTimestamp (/work/packages/workshop-backend/src/overseer.ts:6157:10)\n'[39m +
+    [32m'    at OverseerImpl.addChatMessages (/work/packages/workshop-backend/src/overseer.ts:8366:25)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/src/overseer.ts:3122:14\n'[39m +
+    [32m'    at Object.transaction (/work/packages/typed-storage/src/index.ts:742:22)\n'[39m +
+    [32m'    at OverseerImpl.commitAgentStep (/work/packages/workshop-backend/src/overseer.ts:3056:27)\n'[39m +
+    [32m'    at emit (/work/packages/workshop-backend/src/agent.ts:4039:25)\n'[39m +
+    [32m'    at runLoop (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:287:10)\n'[39m +
+    [32m'    at runAgentLoopContinue (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:149:2)'[39m,
+  message: [32m'failed to bump gadget last-active on user DO'[39m
+}
+{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'gadget.last.active.bump.failed'[39m,
+  error: [32m'TypeError: owner.setGadgetLastActive is not a function'[39m,
+  errorStack: [32m'TypeError: owner.setGadgetLastActive is not a function\n'[39m +
+    [32m'    at OverseerImpl.#bumpLastActiveImpl (/work/packages/workshop-backend/src/overseer.ts:5834:19)\n'[39m +
+    [32m'    at OverseerImpl.bumpLastActive (/work/packages/workshop-backend/src/overseer.ts:5810:12)\n'[39m +
+    [32m'    at OverseerImpl.getChatTimestamp (/work/packages/workshop-backend/src/overseer.ts:6157:10)\n'[39m +
+    [32m'    at OverseerImpl.addChatMessages (/work/packages/workshop-backend/src/overseer.ts:8387:28)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/src/overseer.ts:3122:14\n'[39m +
+    [32m'    at Object.transaction (/work/packages/typed-storage/src/index.ts:742:22)\n'[39m +
+    [32m'    at OverseerImpl.commitAgentStep (/work/packages/workshop-backend/src/overseer.ts:3056:27)\n'[39m +
+    [32m'    at emit (/work/packages/workshop-backend/src/agent.ts:4039:25)\n'[39m +
+    [32m'    at runLoop (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:287:10)\n'[39m +
+    [32m'    at runAgentLoopContinue (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:149:2)'[39m,
+  message: [32m'failed to bump gadget last-active on user DO'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'instance.instructions.read.failed'[39m,
+  error: [32m"TypeError: Cannot read properties of undefined (reading 'get')"[39m,
+  errorStack: [32m"TypeError: Cannot read properties of undefined (reading 'get')\n"[39m +
+    [32m'    at readAdminConfig (/work/packages/workshop-backend/src/admin-config.ts:370:48)\n'[39m +
+    [32m'    at OverseerImpl.getInstanceInstructions (/work/packages/workshop-backend/src/overseer.ts:8627:21)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2856:69)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:90:31\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to read instance instructions'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'formats.agent.list.failed'[39m,
+  error: [32m"TypeError: Cannot read properties of undefined (reading 'get')"[39m,
+  errorStack: [32m"TypeError: Cannot read properties of undefined (reading 'get')\n"[39m +
+    [32m'    at readAdminConfig (/work/packages/workshop-backend/src/admin-config.ts:370:48)\n'[39m +
+    [32m'    at OverseerImpl.#listStandardFormats (/work/packages/workshop-backend/src/overseer.ts:8844:53)\n'[39m +
+    [32m'    at OverseerImpl.describeStandardFormats (/work/packages/workshop-backend/src/overseer.ts:8823:30)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2987:39)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:90:31\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to list standard formats for the agent'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'connectable.vendors.list.failed'[39m,
+  error: [32m'TypeError: this[#ownerUserStub](...).listGatekeeperVendors is not a function'[39m,
+  errorStack: [32m'TypeError: this[#ownerUserStub](...).listGatekeeperVendors is not a function\n'[39m +
+    [32m'    at /work/packages/workshop-backend/src/overseer.ts:8615:37\n'[39m +
+    [32m'    at retryOnDoReset (/work/packages/workshop-backend/src/do-retry.ts:121:18)\n'[39m +
+    [32m'    at OverseerImpl.#listGatekeeperVendorsCached (/work/packages/workshop-backend/src/overseer.ts:8614:19)\n'[39m +
+    [32m'    at OverseerImpl.listConnectableVendors (/work/packages/workshop-backend/src/overseer.ts:8647:32)\n'[39m +
+    [32m'    at runAgentPass (/work/packages/workshop-backend/src/agent.ts:2991:42)\n'[39m +
+    [32m'    at runAgent (/work/packages/workshop-backend/src/agent.ts:1446:19)\n'[39m +
+    [32m'    at runTurn (/work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:53:3)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/__tests__/zz-persona-lifecycle-evidence.test.ts:90:31\n'[39m +
+    [32m'    at maybeHandleRunRequest (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:157:18)\n'[39m +
+    [32m'    at DurableObject.Wrapper.fetch (work/node_modules/.pnpm/@cloudflare+vitest-pool-workers@0.22.0_@cloudflare+workers-types@5.20261005.1_@types+no_d3d4517efc65811c88c9f381c4b49edf/node_modules/@cloudflare/vitest-pool-workers/dist/worker/lib/cloudflare/test-internal.mjs:548:20)'[39m,
+  message: [32m'failed to list connectable vendors'[39m
+}
+
+[90mstderr[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'e91fce482724f3e5c4e4df8cbced062d0dab05ed6f194a0c8c8ae063fcc5b431'[39m,
+  event: [32m'gadget.last.active.bump.failed'[39m,
+  error: [32m'TypeError: owner.setGadgetLastActive is not a function'[39m,
+  errorStack: [32m'TypeError: owner.setGadgetLastActive is not a function\n'[39m +
+    [32m'    at OverseerImpl.#bumpLastActiveImpl (/work/packages/workshop-backend/src/overseer.ts:5834:19)\n'[39m +
+    [32m'    at OverseerImpl.bumpLastActive (/work/packages/workshop-backend/src/overseer.ts:5810:12)\n'[39m +
+    [32m'    at OverseerImpl.getChatTimestamp (/work/packages/workshop-backend/src/overseer.ts:6157:10)\n'[39m +
+    [32m'    at OverseerImpl.addChatMessages (/work/packages/workshop-backend/src/overseer.ts:8366:25)\n'[39m +
+    [32m'    at /work/packages/workshop-backend/src/overseer.ts:3122:14\n'[39m +
+    [32m'    at Object.transaction (/work/packages/typed-storage/src/index.ts:742:22)\n'[39m +
+    [32m'    at OverseerImpl.commitAgentStep (/work/packages/workshop-backend/src/overseer.ts:3056:27)\n'[39m +
+    [32m'    at emit (/work/packages/workshop-backend/src/agent.ts:4039:25)\n'[39m +
+    [32m'    at runLoop (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:287:10)\n'[39m +
+    [32m'    at runAgentLoopContinue (/work/node_modules/.pnpm/@earendil-works+pi-agent-core@0.99.1_@aws-sdk+credential-provider-node@3.972.83_@smithy_963a3ec6cf3a9e4d0810ed3d0cca343f/node_modules/@earendil-works/pi-agent-core/src/agent-loop.ts:149:2)'[39m,
+  message: [32m'failed to bump gadget last-active on user DO'[39m
+}
+
+[90mstdout[2m | __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22m[2mpersona block is byte-stable across turns and hot-updates on change
+[22m[39m
+===== TURN 1/2 GADGET SECTION (byte-identical) =====
+## Gadget APP: "App"
+The owner of this workspace has provided the following additional instructions for working on this gadget. Follow them unless they conflict with the user's safety or the instructions above.
+<gadget_instructions>
+Be terse.
+</gadget_instructions>
+As of the start of this session, this gadget had no code files.
+This gadget has no bindings.
+===== TURN 3 GADGET SECTION (after metadata edit, no code change) =====
+## Gadget APP: "App"
+The owner of this workspace has provided the following additional instructions for working on this gadget. Follow them unless they conflict with the user's safety or the instructions above.
+<gadget_instructions>
+Always answer in rhyme.
+</gadget_instructions>
+As of the start of this session, this gadget had no code files.
+This gadget has no bindings.
+===== END =====
+
+
+ [32m✓[39m __tests__/zz-persona-lifecycle-evidence.test.ts[2m > [22mpersona block is byte-stable across turns and hot-updates on change[32m 116[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 16:57:45
+[2m   Duration [22m 30.86s[2m (transform 15.15s, setup 54ms, import 29.68s, tests 120ms, environment 0ms)[22m
+

@@ -1,0 +1,39 @@
+=== capnweb-validate workspace ===
+capnweb-validate: skipped 16 file(s) outside the project directory (cwd=/work/packages/workshop-backend); they cannot be written under --out, so they are not validated (e.g. /work/packages/workshop-shared/src/gatekeeper.ts).
+capnweb-validate: 8 transformed, 58 copied, 16 skipped (outside project) -> .wrangler/validate
+=== capnweb-validate fixture gatekeeper ===
+capnweb-validate: skipped 3 file(s) outside the project directory (cwd=/work/packages/integration-tests/fixtures/gatekeeper-test); they cannot be written under --out, so they are not validated (e.g. /work/packages/workshop-shared/src/gatekeeper.ts).
+capnweb-validate: 1 transformed, 0 copied, 3 skipped (outside project) -> .wrangler/validate
+ls: cannot access '.wrangler/validate/src/': No such file or directory
+../workshop-backend/.wrangler/validate/src/:
+access.ts
+admin-config.ts
+admin-settings.ts
+agent-catalog.ts
+agent-compaction.ts
+agent-spawner-binding.txt
+agent-tracing.ts
+agent.ts
+ai-gateway-billing
+ai-gateway.ts
+ai-invoke.ts
+ai-model-binding.txt
+ai-models.ts
+analytics.ts
+auth
+auto-approval.ts
+blueprint-archive.ts
+blueprint-release.ts
+browser-export.ts
+=== vitest use-role ===
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/work/packages/integration-tests[39m
+
+ [32m✓[39m __tests__/workshop-use-role.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 4057[2mms[22m[39m
+   [33m[2m✓[22m[39m a use collaborator reaches only the mainline gadget UI [33m 965[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 16:54:21
+[2m   Duration [22m 5.87s[2m (transform 325ms, setup 0ms, import 1.53s, tests 4.06s, environment 0ms)[22m
+
