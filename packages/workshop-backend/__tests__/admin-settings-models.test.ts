@@ -912,7 +912,9 @@ describe("AdminSettings gateway providers", () => {
       const { gatewayModels } = await inDo(admin => admin.getSettings("admin"));
       expect(gatewayModels!.providerSettings).toStrictEqual([
         ...FLOOR, OPENAI_OFF, { provider: "google", enabledBy: "admin", needsApiToken: true },
-        NVIDIA_OFF,
+        // Like google, nvidia-nim rides no Workers AI binding, so without a
+        // gateway token its requests cannot be authenticated either.
+        { provider: "nvidia-nim", needsApiToken: true },
       ]);
       expect(gatewayModels!.models.map(model => model.id)).toContain("gemini-3.6-flash");
 
