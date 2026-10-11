@@ -147,6 +147,15 @@ export type GadgetRecord = {
   output?: BlueprintOutput;
 
   /**
+   * Freeform instructions ("persona") the workspace owner wants the workshop agent to follow when
+   * working on this gadget, injected into the agent's system prompt within this gadget's section
+   * (see AgentGadgetInfo and GadgetClient.setAgentInstructions()). Absent when none are set --
+   * the agent's behavior is then governed by the deployment-wide instructions alone. Gadget
+   * metadata, not code: it can change at any time without editing the gadget.
+   */
+  agentInstructions?: string;
+
+  /**
    * Name of the gadget to use in the workspace's default binding list for new chats. That is, when
    * a new (normal, non-spawner) chat is started, this gadget will be available in its `env` under
    * this name from the start. The name is typically chosen at creation time (an argument to the
