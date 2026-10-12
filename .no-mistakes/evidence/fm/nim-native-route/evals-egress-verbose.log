@@ -1,0 +1,23 @@
+
+ RUN  v4.1.11 /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/packages/workshop-evals
+
+ ✓ src/target-egress.test.ts > allows the direct Workers AI route 69ms
+ ✓ src/target-egress.test.ts > allows AI Gateway inference and cost-log routes over HTTPS 2ms
+ ✓ src/target-egress.test.ts > keeps HTTPS model routes closed in binding mode, with or without a token 13ms
+ ✓ src/target-egress.test.ts > opens only the HTTPS inference route for an HTTPS-only provider in binding mode 27ms
+ ✓ src/target-egress.test.ts > scopes HTTPS inference to the gateway routes of the models in the matrix 7ms
+ ✓ src/target-egress.test.ts > opens NVIDIA NIM's provider-specific route, and nowhere else, over HTTPS 2ms
+ ✓ src/target-egress.test.ts > keeps NVIDIA NIM's HTTPS route closed in binding mode 1ms
+ ✓ src/target-egress.test.ts > accepts a nvidia-nim model on the binding transport without a token 2ms
+ ✓ src/target-egress.test.ts > returns a deterministic denial for every other route, loopback included 2ms
+ ✓ src/target-egress.test.ts > configures the Workshop for HTTPS gateway access 1ms
+ ✓ src/target-egress.test.ts > configures the Workshop for the binding transport, retaining any token 1ms
+ ✓ src/target-egress.test.ts > leaves the Workshop config alone for direct access 7ms
+ ✓ src/target-egress.test.ts > gives a model's concurrent trials one Workshop with a session each 2ms
+ ✓ src/target-egress.test.ts > keeps counting a Workshop that failed to stop 25ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  07:10:42
+   Duration  1.23s (transform 480ms, setup 0ms, import 531ms, tests 166ms, environment 0ms)
+

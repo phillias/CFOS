@@ -1,0 +1,98 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/packages/workshop-backend[39m
+
+Sourcemap for "/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/standardwebhooks@1.1.1/node_modules/standardwebhooks/dist/index.js" points to missing source files
+Sourcemap for "/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/@google+genai@2.21.0_supports-color@10.2.2/node_modules/@google/genai/dist/web/index.mjs" points to missing source files
+[90mstdout[2m | __integration__/open-gadget-rpc.test.ts[2m > [22m[2muser-DO reset flags[2m > [22m[2mlocal aborts reject flagless — flag-based recovery is untestable locally
+[22m[39m{
+  component: [32m'workshop.formats'[39m,
+  event: [32m'formats.install.ok'[39m,
+  blueprintId: [32m'format.document'[39m,
+  message: [32m'installed bundled blueprint'[39m
+}
+
+[90mstdout[2m | __integration__/open-gadget-rpc.test.ts[2m > [22m[2muser-DO reset flags[2m > [22m[2mlocal aborts reject flagless — flag-based recovery is untestable locally
+[22m[39m{
+  component: [32m'workshop.formats'[39m,
+  event: [32m'formats.install.ok'[39m,
+  blueprintId: [32m'format.spreadsheet'[39m,
+  message: [32m'installed bundled blueprint'[39m
+}
+
+[90mstdout[2m | __integration__/open-gadget-rpc.test.ts[2m > [22m[2muser-DO reset flags[2m > [22m[2mlocal aborts reject flagless — flag-based recovery is untestable locally
+[22m[39m{
+  component: [32m'workshop.formats'[39m,
+  event: [32m'formats.install.ok'[39m,
+  blueprintId: [32m'format.slides'[39m,
+  message: [32m'installed bundled blueprint'[39m
+}
+
+[90mstdout[2m | __integration__/open-gadget-rpc.test.ts[2m > [22m[2muser-DO reset flags[2m > [22m[2mlocal aborts reject flagless — flag-based recovery is untestable locally
+[22m[39m{
+  component: [32m'workshop.admin.settings'[39m,
+  event: [32m'formats.install.complete'[39m,
+  size: [33m3[39m,
+  failureCount: [33m0[39m,
+  message: [32m'installed bundled blueprints'[39m
+}
+
+[90mstdout[2m | __integration__/user-directory-rpc.test.ts[2m > [22m[2man open capability re-reads the search policy once its cache expires
+[22m[39m{
+  component: [32m'workshop.formats'[39m,
+  event: [32m'formats.install.ok'[39m,
+  blueprintId: [32m'format.document'[39m,
+  message: [32m'installed bundled blueprint'[39m
+}
+
+[90mstdout[2m | __integration__/user-directory-rpc.test.ts[2m > [22m[2man open capability re-reads the search policy once its cache expires
+[22m[39m{
+  component: [32m'workshop.formats'[39m,
+  event: [32m'formats.install.ok'[39m,
+  blueprintId: [32m'format.spreadsheet'[39m,
+  message: [32m'installed bundled blueprint'[39m
+}
+
+[90mstdout[2m | __integration__/user-directory-rpc.test.ts[2m > [22m[2man open capability re-reads the search policy once its cache expires
+[22m[39m{
+  component: [32m'workshop.formats'[39m,
+  event: [32m'formats.install.ok'[39m,
+  blueprintId: [32m'format.slides'[39m,
+  message: [32m'installed bundled blueprint'[39m
+}
+
+[90mstdout[2m | __integration__/user-directory-rpc.test.ts[2m > [22m[2man open capability re-reads the search policy once its cache expires
+[22m[39m{
+  component: [32m'workshop.admin.settings'[39m,
+  event: [32m'formats.install.complete'[39m,
+  size: [33m3[39m,
+  failureCount: [33m0[39m,
+  message: [32m'installed bundled blueprints'[39m
+}
+
+uncaught exception; exception = workerd/api/actor-state.c++:1206: failed: broken.outputGateBroken; jsg.Error: user-DO reset injected by test
+stack: /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/@cloudflare+workerd-linux-arm64@1.20261001.1/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd@33bbb73
+uncaught exception; exception = workerd/api/actor-state.c++:1206: failed: broken.outputGateBroken; jsg.Error: user-DO reset injected by test
+stack: /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/@cloudflare+workerd-linux-arm64@1.20261001.1/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd@33bbb73
+uncaught exception; exception = workerd/api/actor-state.c++:1206: failed: broken.outputGateBroken; jsg.Error: user-DO reset injected by test
+stack: /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/@cloudflare+workerd-linux-arm64@1.20261001.1/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd@31aae3c /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/@cloudflare+workerd-linux-arm64@1.20261001.1/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd@31ab07c /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/@cloudflare+workerd-linux-arm64@1.20261001.1/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd@31abcb3 /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/@cloudflare+workerd-linux-arm64@1.20261001.1/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd@581d1ab /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/node_modules/.pnpm/@cloudflare+workerd-linux-arm64@1.20261001.1/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd@2f52dc3
+ [32m✓[39m __integration__/user-directory-rpc.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 634[2mms[22m[39m
+   [33m[2m✓[22m[39m an open capability re-reads the search policy once its cache expires [33m 632[2mms[22m[39m
+[90mstderr[2m | __integration__/open-gadget-rpc.test.ts[2m > [22m[2mworkspace session across a user-DO-only reset[2m > [22m[2mchat, models, and gadget capabilities survive the user DO resetting
+[22m[39m{
+  component: [32m'workshop.overseer'[39m,
+  gadgetId: [32m'fb4b63a213eddf6b7dfb02e88c21da050d0bf3d09bc16925a53c61f8f7a4ade6'[39m,
+  event: [32m'gadget.last.active.bump.failed'[39m,
+  error: [32m'Error: user-DO reset injected by test'[39m,
+  errorStack: [32m'Error: user-DO reset injected by test\n'[39m +
+    [32m'    at OverseerImpl.#bumpLastActiveImpl (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4Q5E58YNSX5132HYCFEV6B4/packages/workshop-backend/src/overseer.ts:5834:7)'[39m,
+  message: [32m'failed to bump gadget last-active on user DO'[39m
+}
+
+ [32m✓[39m __integration__/open-gadget-rpc.test.ts [2m([22m[2m6 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m[33m 752[2mms[22m[39m
+     [33m[2m✓[22m[39m local aborts reject flagless — flag-based recovery is untestable locally [33m 481[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[2m | [22m[33m4 skipped[39m[90m (7)[39m
+[2m   Start at [22m 11:06:40
+[2m   Duration [22m 43.71s[2m (transform 35.18s, setup 186ms, import 82.43s, tests 1.39s, environment 0ms)[22m
+
