@@ -41,7 +41,7 @@ const GATEWAY_ROUTES: Readonly<Partial<Record<AiModelProvider, string>>> = {
   anthropic: "anthropic",
   openai: "openai",
   google: "google-ai-studio",
-  "nvidia-nim": "compat",
+  "nvidia-nim": "custom-nvidia-nim",
 };
 
 export type LocalEvalTarget = AsyncDisposable & { session: WorkshopAgentSession };

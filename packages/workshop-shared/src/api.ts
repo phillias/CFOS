@@ -1875,7 +1875,8 @@ const SUGGESTED_MODEL_CATALOG = {
     "gemini-3.6-flash": {name: "Gemini 3.6 Flash", contextWindow: 1048576},
   },
   // NVIDIA NIM, reached through the account's custom "nvidia-nim" provider (NVIDIA's hosted
-  // integrate.api.nvidia.com endpoint) on the gateway's /compat unified route. The window and
+  // integrate.api.nvidia.com endpoint) on the gateway's provider-specific custom-nvidia-nim
+  // route. The window and
   // output limits mirror the same GLM models on Workers AI: NVIDIA's /v1/models reports no
   // max_model_len for them.
   "nvidia-nim": {
@@ -1914,13 +1915,9 @@ export type SuggestedModelId<P extends AiModelProvider = AiModelProvider> =
  * pi's Vertex adapter throws the same way, so a google-vertex provider would belong here too; it
  * is absent only because this deployment has no such provider.
  * https://github.com/earendil-works/pi/blob/v0.84.2/packages/ai/src/api/google-vertex.ts#L98
- *
- * NVIDIA NIM rides the gateway's /compat unified route, which is served on
- * gateway.ai.cloudflare.com (verified with a CF API token) but not reachable on the
- * workers-binding.ai binding transport, so it always runs over HTTPS with CF_AI_GATEWAY_API_TOKEN.
  */
 export const HTTPS_ONLY_PROVIDERS: ReadonlySet<string> =
-    new Set<AiModelProvider>(["google", "nvidia-nim"]);
+    new Set<AiModelProvider>(["google"]);
 
 /**
  * Metadata about a workspace (one Overseer DO and everything in it). Includes everything needed
