@@ -244,13 +244,12 @@ function workersAiCompat(catalog: CatalogEntry | undefined): OpenAICompletionsCo
 // (the platform's or a user's). `gatewayUrl` is a gateway root -- over HTTPS
 // (https://gateway.ai.cloudflare.com/v1/{accountId}/{gateway}) or, for binding-routed requests,
 // over the AI binding (https://workers-binding.ai/ai-gateway/gateways/{gateway}); each
-// provider's native API is exposed under the same per-provider path on either. AI Gateway also
+// provider's native API is exposed under the same per-provider path on either -- including the
+// provider-specific route a custom provider gets. AI Gateway also
 // offers a unified OpenAI-compat
-// translation layer (/compat), which we deliberately never use for native providers: we already
+// translation layer (/compat), which we deliberately never use: we already
 // speak every provider's native API, and the translation drops provider features pi relies on
-// (extended thinking, Anthropic cache_control prompt caching, the OpenAI Responses API). The one
-// exception is custom providers like nvidia-nim, which have no per-provider route and are only
-// reachable through /compat. Billing --
+// (extended thinking, Anthropic cache_control prompt caching, the OpenAI Responses API). Billing --
 // including unified billing on a user's own gateway -- is orthogonal to which API a request
 // speaks. Returns undefined for providers AI Gateway cannot serve (ollama).
 function gatewayNativeModel(config: AiModelConfig, gatewayUrl: string): Model<Api> | undefined {
@@ -327,18 +326,19 @@ function gatewayNativeModel(config: AiModelConfig, gatewayUrl: string): Model<Ap
         compat: workersAiCompat(catalog),
       };
     case "nvidia-nim":
-      // NVIDIA's hosted NIM endpoint, registered on this account as the custom provider
-      // "nvidia-nim" (integrate.api.nvidia.com). Custom providers have no per-provider gateway
-      // route, so they are only reachable through the gateway's /compat unified endpoint, with
-      // the custom-provider namespace in the model ID. NIM speaks plain chat completions: no
-      // Responses API, no store, and it takes no reasoning_effort (GLM models reason on their
-      // own).
+      // NVIDIA's hosted NIM endpoint, registered on the account as the custom provider
+      // "nvidia-nim" (base URL integrate.api.nvidia.com). A custom provider's provider-specific
+      // route is exposed like any native provider's, under custom-{slug}: everything past the
+      // route segment is appended to the provider's base URL, and the model ID stays plain. So
+      // NIM rides the binding transport like anthropic and openai -- no /compat, no custom-
+      // prefixed model ID. NIM speaks plain chat completions: no Responses API, no store, and
+      // it takes no reasoning_effort (GLM models reason on their own).
       return {
-        id: `custom-nvidia-nim/${config.model}`,
+        id: config.model,
         name: catalog?.name ?? config.model,
         api: "openai-completions",
         provider: "nvidia-nim",
-        baseUrl: `${gatewayUrl}/compat`,
+        baseUrl: `${gatewayUrl}/custom-nvidia-nim/v1`,
         reasoning: catalog?.reasoning ?? false,
         input: catalog?.input ?? ["text"],
         cost: catalog?.cost ?? ZERO_COST,

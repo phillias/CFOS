@@ -143,6 +143,47 @@ describe("getModel AI Gateway routing", () => {
     });
   });
 
+  it("routes NVIDIA NIM through the gateway's provider-specific custom-provider route", async () => {
+    // NIM is registered on the account as the custom provider "nvidia-nim", whose route is
+    // custom-nvidia-nim, addressed like any native provider's: everything past the route segment
+    // is appended to the provider's base URL, and the model ID stays plain (no custom- prefix).
+    const NIM_CONFIG: AiModelConfig = {
+      provider: "nvidia-nim",
+      model: "z-ai/glm-5.3-flash",
+      apiToken: "ignored-in-gateway-mode",
+    };
+    const handle = getModel(env(), NIM_CONFIG, INITIATOR);
+
+    expect(handle.model.api).toBe("openai-completions");
+    expect(handle.model.id).toBe("z-ai/glm-5.3-flash");
+    expect(handle.model.baseUrl).toBe(
+        "https://gateway.ai.cloudflare.com/v1/gateway-account-id/platform-gateway/" +
+        "custom-nvidia-nim/v1");
+    expect(handle.model.reasoning).toBe(false);
+    // NIM compat stays deliberately minimal: plain chat completions only.
+    expect(handle.model.compat).toMatchObject({
+      supportsStore: false,
+      supportsDeveloperRole: false,
+      supportsLongCacheRetention: false,
+      sendSessionAffinityHeaders: false,
+      supportsReasoningEffort: false,
+    });
+    expect(handle.aiGatewayLogRoute).toEqual({
+      gateway: "platform-gateway",
+      accountId: "gateway-account-id",
+      apiToken: "gateway-token",
+    });
+
+    const request = await captureRequest(handle);
+    expect(request.url).toBe(
+        "https://gateway.ai.cloudflare.com/v1/gateway-account-id/platform-gateway/" +
+        "custom-nvidia-nim/v1/chat/completions");
+    expect(request.headers.get("cf-aig-authorization")).toBe("Bearer gateway-token");
+    // The model ID stays plain on the wire; the provider-specific route names the provider.
+    expect((JSON.parse(request.body) as { model: string }).model)
+        .toBe("z-ai/glm-5.3-flash");
+  }, 15000);
+
   it("preserves gadget automation metadata", async () => {
     const handle = getModel(env(), ANTHROPIC_CONFIG, GADGET_INITIATOR, {
       metadata: { source: "thread-title", gadgetId: "gadget-456", chatId: 8 },
@@ -363,6 +404,30 @@ describe("getModel AI Gateway binding transport", () => {
     // openai-completions adapters inject `Authorization: Bearer unused` under header-owned
     // auth; the gatewayAuthHeaders nulls must delete it before dispatch, else the gateway
     // would treat it as a request-supplied provider key overriding stored keys.
+    const headerNames = Object.keys(entry.headers).map((name) => name.toLowerCase());
+    expect(headerNames).not.toContain("authorization");
+    expect(headerNames).not.toContain("x-api-key");
+  }, 15000);
+
+  it("drives NVIDIA NIM through the binding via its gateway route", async () => {
+    // nvidia-nim rides the Workers AI binding transport like anthropic and openai, with the
+    // provider key served by the gateway, so no API token is in play.
+    const handle = getModel(bindingEnv({ CF_AI_GATEWAY_PROVIDERS: "anthropic,openai,cloudflare,nvidia-nim" }), {
+      provider: "nvidia-nim",
+      model: "z-ai/glm-5.3-flash",
+      apiToken: "",
+    }, INITIATOR);
+
+    expect(handle.model.baseUrl).toBe(
+        "https://workers-binding.ai/ai-gateway/gateways/platform-gateway/custom-nvidia-nim/v1");
+    expect(handle.aiGatewayLogRoute).toEqual({ gateway: "platform-gateway" });
+
+    const entry = await captureEntry(handle);
+    expect(entry.url).toBe(
+        "https://workers-binding.ai/ai-gateway/gateways/platform-gateway/custom-nvidia-nim/" +
+        "v1/chat/completions");
+    expect((JSON.parse(entry.body) as { model: string }).model)
+        .toBe("z-ai/glm-5.3-flash");
     const headerNames = Object.keys(entry.headers).map((name) => name.toLowerCase());
     expect(headerNames).not.toContain("authorization");
     expect(headerNames).not.toContain("x-api-key");

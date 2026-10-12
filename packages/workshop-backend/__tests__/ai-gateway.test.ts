@@ -636,10 +636,10 @@ describe("GatewayModels", () => {
     });
 
     it("reports a provider whose requests need a token the deployment lacks", () => {
-      // Whether the provider is on or off. nvidia-nim rides the HTTPS transport alone, like
-      // google (HTTPS_ONLY_PROVIDERS), so a tokenless deployment lacks the token for it too.
-      expect(needsToken(tokenless())).toEqual(["google", "nvidia-nim"]);
-      expect(needsToken(tokenless(), ["google", "openai"])).toEqual(["google", "nvidia-nim"]);
+      // Whether the provider is on or off. Only google rides the HTTPS transport alone
+      // (HTTPS_ONLY_PROVIDERS); nvidia-nim rides the binding like anthropic and openai.
+      expect(needsToken(tokenless())).toEqual(["google"]);
+      expect(needsToken(tokenless(), ["google", "openai"])).toEqual(["google"]);
       // With a token, over HTTPS alone or beside the binding, none does.
       expect(needsToken(gatewayEnv("anthropic,google"))).toEqual([]);
       expect(needsToken(env({

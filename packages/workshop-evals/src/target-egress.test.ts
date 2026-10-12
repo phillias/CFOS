@@ -40,7 +40,8 @@ vi.mock("@gadgets/integration-tests/harness", () => ({
 }));
 
 import {
-  closeLocalEvalRuntimes, evalNetworkInterceptor, openLocalEvalTarget, runtimesStillRunning,
+  assertModelAccess, closeLocalEvalRuntimes, evalNetworkInterceptor, openLocalEvalTarget,
+  runtimesStillRunning,
 } from "./target.js";
 
 const realFetch = globalThis.fetch;
@@ -63,6 +64,7 @@ afterEach(async () => {
 const WORKERS_AI_MODEL: EvalModel = { provider: "cloudflare", model: "@cf/zai-org/glm-5.2" };
 const GEMINI: EvalModel = { provider: "google", model: "gemini-3.6-flash" };
 const CLAUDE: EvalModel = { provider: "anthropic", model: "claude-sonnet-5" };
+const NIM: EvalModel = { provider: "nvidia-nim", model: "z-ai/glm-5.3-flash" };
 const DIRECT: LocalModelAccess = { kind: "direct", accountId: "account-id", apiToken: "token" };
 const BINDING: LocalModelAccess = {
   kind: "gateway", gateway: "gateway", accountId: "account-id", transport: "binding",
@@ -81,6 +83,10 @@ const GEMINI_INFERENCE_URL =
     "https://gateway.ai.cloudflare.com/v1/account-id/gateway/google-ai-studio/v1beta/models/gemini-3.6-flash:streamGenerateContent";
 const CLAUDE_INFERENCE_URL =
     "https://gateway.ai.cloudflare.com/v1/account-id/gateway/anthropic/v1/messages";
+const NIM_INFERENCE_URL =
+    "https://gateway.ai.cloudflare.com/v1/account-id/gateway/custom-nvidia-nim/v1/chat/completions";
+const NIM_COMPAT_URL =
+    "https://gateway.ai.cloudflare.com/v1/account-id/gateway/compat/v1/chat/completions";
 const COST_LOG_URL =
     "https://api.cloudflare.com/client/v4/accounts/account-id/ai-gateway/gateways/gateway/logs/log-id";
 
@@ -125,6 +131,29 @@ it("scopes HTTPS inference to the gateway routes of the models in the matrix", a
   const urls = [CLAUDE_INFERENCE_URL, WORKERS_AI_INFERENCE_URL, GEMINI_INFERENCE_URL];
   expect(await egress(HTTPS, [CLAUDE], urls)).toEqual([204, 403, 403]);
   expect(await egress(HTTPS, [CLAUDE, WORKERS_AI_MODEL], urls)).toEqual([204, 204, 403]);
+});
+
+// nvidia-nim rides the gateway's provider-specific custom-nvidia-nim route, not the old /compat
+// unified route, so the egress filter opens exactly that path.
+it("opens NVIDIA NIM's provider-specific route, and nowhere else, over HTTPS", async () => {
+  expect(await egress(HTTPS, [NIM], [NIM_INFERENCE_URL])).toEqual([204]);
+  expect(await egress(HTTPS, [NIM], [NIM_COMPAT_URL])).toEqual([403]);
+  expect(await egress(HTTPS, [NIM], [GEMINI_INFERENCE_URL, WORKERS_AI_INFERENCE_URL]))
+    .toEqual([403, 403]);
+});
+
+// nvidia-nim dropped out of HTTPS_ONLY_PROVIDERS: it rides the binding transport like anthropic
+// and openai, so in binding mode the filter keeps the HTTPS route closed even with a token.
+it("keeps NVIDIA NIM's HTTPS route closed in binding mode", async () => {
+  expect(await egress(BINDING, [NIM], [NIM_INFERENCE_URL])).toEqual([403]);
+  expect(await egress(BINDING_WITH_TOKEN, [NIM], [NIM_INFERENCE_URL])).toEqual([403]);
+});
+
+// assertModelAccess mirrors the backend AiGatewayConfig: a nvidia-nim model no longer requires
+// CF_AI_GATEWAY_API_TOKEN on the binding transport.
+it("accepts a nvidia-nim model on the binding transport without a token", () => {
+  expect(() => assertModelAccess(BINDING, NIM)).not.toThrow();
+  expect(() => assertModelAccess(BINDING, GEMINI)).toThrow(/requires CF_AI_GATEWAY_API_TOKEN/);
 });
 
 it("returns a deterministic denial for every other route, loopback included", async () => {
