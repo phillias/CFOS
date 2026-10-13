@@ -1,0 +1,72 @@
+
+ RUN  v4.1.11 /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4SKCFZ2ZFDWJWSJPZ2AEVA7/packages/gatekeeper-memory
+
+(node:1260762) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[add] id:d-2026-10-12-d1-cannot-load-sqlite-vec deduped:false commit:c1
+[repo file] objects/constraint/d-2026-10-12-d1-cannot-load-sqlite-vec.md pushed to git tip c1
+---
+id: d-2026-10-12-d1-cannot-load-sqlite-vec
+type: constraint
+title: D1 cannot load sqlite-vec
+tags: d1,vectors
+confidence: 0.9
+version: 1
+created: 2026-10-12T06:00:00.000Z
+updated: 2026-10-12T06:00:00.000Z
+author: workshop/janedoe/gadget-42
+scope: gadget-42
+---
+[search] results:0 truncated:false
+  hint:0 memories found matching 'deploy order' — try broader terms, or add() to record what you learned
+[search type=decision] total:1 top:d-2026-10-12-deploy-order-scheduler-deploys-after-context
+[search tag=router] total:1 top:d-2026-10-12-router-always-deploys-last
+[search regex] total:1 score:12
+[add duplicate] id:d-2026-10-12-d1-cannot-load-sqlite-vec deduped:true mergedInto:d-2026-10-12-d1-cannot-load-sqlite-vec
+[stats] total:4 dirty:0 repoOk:true semantic:false byType{constraint:2,decision:1,failure:0,howto:1,preference:0}
+[get preview] bodyBytes:1800 bodyLen:1500 hint:body truncated to 1500 chars; pass {full:true} for the complete body
+[get full] bodyLen:1800 hint:undefined
+[get missing]
+error:no memory with id d-2026-10-12-nope
+code:NOT_FOUND
+help:list ids with search('*') or stats(); ids are d-YYYY-MM-DD-<slug>
+[search bad type]
+error:unknown type 'note'
+code:VALIDATION
+help:fix the input and retry; see help() for the write policy
+[add secret in body]
+error:body contains a secret-shaped value (github token)
+code:SECRET_REFUSED
+help:strip the secret and re-add; store only where the secret lives (env var, vault), never its value
+[add secret in tags]
+error:body contains a secret-shaped value (github token)
+code:SECRET_REFUSED
+help:strip the secret and re-add; store only where the secret lives (env var, vault), never its value
+[update] id:d-2026-10-12-router-always-deploys-last version:2 commit:c6
+[delete] id:d-2026-10-12-router-always-deploys-last deleted:true commit:c7
+[delete again (idempotent)] deleted:true
+[human edit via clone] total:1 id:d-2026-10-11-human-edit
+[human delete via clone] total:0
+[before outage] total:4 dirty:0 repoOk:true repoTip:human-2
+[add during outage]
+error:memory repo unavailable; write queued in outbox
+code:REPO_UNAVAILABLE
+help:the write retries automatically; call stats() to check dirty/repoOk
+[stats during outage] total:4 dirty:1 repoOk:true
+[read during outage] total:0 (local mirror served; write not visible yet)
+[stats after recovery+flush] total:5 dirty:0 repoOk:true
+[search after recovery] total:1 id:d-2026-10-12-write-during-outage → OUTBOX DRAINED, WRITE LANDED IN GIT
+[repo layout §5]
+  objects/constraint/d-2026-10-12-d1-cannot-load-sqlite-vec.md
+  objects/decision/d-2026-10-12-deploy-order-scheduler-deploys-after-context.md
+  objects/decision/d-2026-10-12-long-decision-with-a-long-rationale-body.md
+  objects/decision/d-2026-10-12-write-during-outage.md
+  objects/howto/d-2026-10-12-ingress-1-setup.md
+[frontmatter §5] id:d-2026-10-12-deploy-order-scheduler-deploys-after-context type:decision version:1 author:gadget-1 scope: body:"Deploy order: Error Reporter → Context →"...
+ ✓ __tests__/.evidence-transcript.test.ts > §7 evidence transcript (report examples, executed live against the store core) > prints the §7 TOON examples end-to-end 80ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:26:19
+   Duration  801ms (transform 382ms, setup 0ms, import 481ms, tests 82ms, environment 0ms)
+
