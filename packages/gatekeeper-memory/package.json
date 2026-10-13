@@ -1,0 +1,30 @@
+{
+  "name": "@gadgets/gatekeeper-memory",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "echo \"run 'pnpm dev-server' in the root directory instead\" >&2 && exit 1",
+    "deploy": "wrangler deploy",
+    "build": "tsc",
+    "clean": "rm -rf dist src/generated",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "@gadgets/error-reporting": "workspace:*",
+    "@gadgets/observability": "workspace:*",
+    "@gadgets/workshop-shared": "workspace:*",
+    "capnweb": "catalog:",
+    "capnweb-validate": "catalog:",
+    "isomorphic-git": "^1.42.2",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@gadgets/scripts": "workspace:*",
+    "@types/node": "26.1.0",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
+  }
+}
