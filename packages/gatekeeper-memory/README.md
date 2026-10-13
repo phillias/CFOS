@@ -71,12 +71,14 @@ Tokens are minted in the Artifacts dashboard, up to one year of validity. Every 
 
 ## Deployment and setup
 
-The starter's `scripts/deploy.ts` binds this Worker as `GATEKEEPER_MEMORY` on both the Workshop
-(`GatekeeperVendor` entrypoint) and the router (no entrypoint), and adds the `ARTIFACTS` binding,
-the `AI` binding, and the `MEMORY_SEMANTIC` var. The repository (`agent-memories` in the
-`cfos-memory` namespace) is created on first use.
+This PR ships the Worker package itself, unbound. The starter-wrapper wiring — binding the Worker
+as `GATEKEEPER_MEMORY` on the Workshop (`GatekeeperVendor` entrypoint) and on the router (no
+entrypoint), and adding the `ARTIFACTS` and `AI` bindings plus the `MEMORY_SEMANTIC` var — ships
+in a separate starter PR afterwards. Until that wiring lands, the Worker is not bound to any
+deployment and no Memory account is provisioned.
 
-After deploying, open `/admin` and set the **Memory** Gatekeeper to enabled (or optional) — vendor
+Once bound, the repository (`agent-memories` in the `cfos-memory` namespace) is created on first
+use. Then open `/admin` and set the **Memory** Gatekeeper to enabled (or optional) — vendor
 discovery is binding-driven, but accounts are only auto-provisioned for enabled vendors. Users
 then approve memory writes individually or via the always-allow rule for `memory.write`.
 
