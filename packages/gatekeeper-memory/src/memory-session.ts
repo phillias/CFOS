@@ -168,7 +168,13 @@ export class MemorySession extends NativeRpcTarget {
     if (bodyErr) throw validationError(bodyErr);
     let typeErr = validateType(args.type);
     if (typeErr) throw validationError(typeErr);
-    let finding = scanForSecrets(args.title, args.body);
+    let finding = scanForSecrets(
+      args.title,
+      args.body,
+      normalizeTags(args.tags),
+      args.author ?? this.#accountId,
+      args.scope ?? "",
+    );
     if (finding) throw secretError(finding);
 
     // Dedup pre-check: no write needed if we hit an existing memory
@@ -223,10 +229,12 @@ export class MemorySession extends NativeRpcTarget {
       let err = validateBody(patch.body);
       if (err) throw validationError(err);
     }
-    if (patch.title !== undefined || patch.body !== undefined) {
-      let finding = scanForSecrets(patch.title ?? "", patch.body ?? "");
-      if (finding) throw secretError(finding);
-    }
+    let finding = scanForSecrets(
+      patch.title ?? "",
+      patch.body ?? "",
+      patch.tags !== undefined ? normalizeTags(patch.tags) : "",
+    );
+    if (finding) throw secretError(finding);
 
     let actionId = await this.#sessionContext.nextActionId();
     await this.#sessionContext.putPendingOp(actionId, {

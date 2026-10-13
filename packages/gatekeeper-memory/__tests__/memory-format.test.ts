@@ -106,6 +106,13 @@ describe("scanForSecrets", () => {
     expect(scanForSecrets("t", "password: abcdefghijklmnop")).toBe("body contains a secret-shaped value (key-value assignment)");
   });
 
+  it("scans every persisted field, not just title and body", () => {
+    let secret = "ghp_" + "a".repeat(40);
+    expect(scanForSecrets("t", "b", "x," + secret)).toContain("github token");
+    expect(scanForSecrets("t", "b", "tag", "author", secret)).toContain("github token");
+    expect(scanForSecrets("t", "b", "tag", secret, "scope")).toContain("github token");
+  });
+
   it("scans the title too", () => {
     expect(scanForSecrets("leaked ghp_" + "a".repeat(40), "clean body")).toContain("github token");
   });

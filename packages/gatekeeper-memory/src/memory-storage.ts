@@ -59,14 +59,28 @@ export class MemoryStorage extends DurableObject<Cloudflare.Env, MemoryStoragePr
         : null;
       let semantic = this.env.MEMORY_SEMANTIC === "true" && this.env.AI !== undefined;
       this.#core = new MemoryStoreCore(db, repo, { semantic });
+      this.#armBackstop();
     }
     return this.#core;
   }
 
-  async initialize(): Promise<void> {
-    // Ensure schema is applied and the git mirror is fresh on first contact.
-    await this.#store().ensureFresh();
-    await this.ctx.storage.setAlarm(new Date(Date.now() + ALARM_INTERVAL_MS));
+  #armBackstop(): void {
+    this.ctx.storage.setAlarm(new Date(Date.now() + ALARM_INTERVAL_MS)).catch((err) => {
+      logger.warn("memory backstop alarm arm failed", {
+        event: "memory.alarm.arm.failed",
+        operation: "armBackstop",
+        repoName: "agent-memories",
+        commit: "",
+        bodyBytes: 0,
+        dirty: 0,
+        attempts: 0,
+        vendorId: "memory",
+        memoryId: "",
+        query: "",
+        total: 0,
+        error: err as Error,
+      });
+    });
   }
 
   // --- Alarm: 15-min backstop for freshness + outbox retries ---

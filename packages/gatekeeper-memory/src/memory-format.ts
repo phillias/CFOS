@@ -97,11 +97,12 @@ const SECRET_PATTERNS: { name: string; re: RegExp }[] = [
 ];
 
 /**
- * Scan title+body for secret-shaped values. Returns a human-readable finding, or null.
+ * Scan every user-supplied persisted field (title, body, tags, author, scope) for
+ * secret-shaped values. Returns a human-readable finding, or null.
  * NO exceptions or overrides — any hit refuses the write.
  */
-export function scanForSecrets(title: string, body: string): string | null {
-  let combined = `${title}\n${body}`;
+export function scanForSecrets(...fields: string[]): string | null {
+  let combined = fields.join("\n");
   for (let { name, re } of SECRET_PATTERNS) {
     let m = re.exec(combined);
     if (!m) continue;

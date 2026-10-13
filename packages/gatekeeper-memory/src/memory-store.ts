@@ -722,14 +722,14 @@ export class MemoryStoreCore implements MemoryStore {
     let typeError = validateType(args.type);
     if (typeError) throw validation(typeError);
 
-    // Secret scan — no exceptions
-    let finding = scanForSecrets(args.title, args.body);
-    if (finding) throw secretRefused(finding);
-
     let tags = normalizeTags(args.tags);
     let confidence = clampConfidence(args.confidence);
     let author = args.author ?? "";
     let scope = args.scope ?? "";
+
+    // Secret scan — no exceptions
+    let finding = scanForSecrets(args.title, args.body, tags, author, scope);
+    if (finding) throw secretRefused(finding);
 
     // Dedup check: literal pre-search on title, then Jaccard ≥0.85
     let duplicate = this.#findDuplicate(args.title);
@@ -823,7 +823,7 @@ export class MemoryStoreCore implements MemoryStore {
     if (titleError) throw validation(titleError);
     let bodyError = validateBody(newBody);
     if (bodyError) throw validation(bodyError);
-    let finding = scanForSecrets(newTitle, newBody);
+    let finding = scanForSecrets(newTitle, newBody, newTags, row.author, row.scope);
     if (finding) throw secretRefused(finding);
 
     let now = this.#isoNow();

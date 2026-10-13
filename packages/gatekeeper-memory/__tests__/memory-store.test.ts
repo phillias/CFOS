@@ -257,6 +257,31 @@ describe("validation and secrets (structured errors, no outbox growth)", () => {
     expect(stats.total).toBe(0);
   });
 
+  it("refuses secret-shaped values in tags, author, and scope", async () => {
+    let { store } = makeStore(null);
+    let secret = "ghp_" + "a".repeat(40);
+    await expect(store.add({ title: "t", type: "howto", body: "b", tags: `x,${secret}` }))
+      .rejects.toMatchObject({ code: "SECRET_REFUSED" });
+    await expect(store.add({ title: "t", type: "howto", body: "b", author: secret }))
+      .rejects.toMatchObject({ code: "SECRET_REFUSED" });
+    await expect(store.add({ title: "t", type: "howto", body: "b", scope: secret }))
+      .rejects.toMatchObject({ code: "SECRET_REFUSED" });
+    let stats = await store.stats();
+    expect(stats.dirty).toBe(0);
+    expect(stats.total).toBe(0);
+  });
+
+  it("refuses secret-shaped values in an update patch's tags without mutating the row", async () => {
+    let { store } = makeStore(null);
+    let res = await store.add({ title: "Update target", type: "decision", body: "b" });
+    await expect(store.update(res.id, { tags: "x,ghp_" + "a".repeat(40) }))
+      .rejects.toMatchObject({ code: "SECRET_REFUSED" });
+    let got = await store.get(res.id);
+    expect(got.tags).toBe("");
+    expect(got.version).toBe(1);
+    expect((await store.stats()).dirty).toBe(0);
+  });
+
   it("rejects unknown search type filters", async () => {
     let { store } = makeStore(null);
     await expect(store.search("*", { type: "note" })).rejects.toMatchObject({ code: "VALIDATION" });
