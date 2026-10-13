@@ -693,6 +693,48 @@
         "MCP_ALLOW_INSECURE": "false"
       }
     },
+    "gatekeeper-memory": {
+      "bindings": [],
+      "compatibilityDate": "2026-09-04",
+      "compatibilityFlags": [
+        "nodejs_compat",
+        "allow_irrevocable_stub_storage"
+      ],
+      "inputs": [],
+      "installable": true,
+      "kind": "gatekeeper",
+      "mainModule": "memory.js",
+      "migrations": [
+        {
+          "new_sqlite_classes": [
+            "MemoryGatekeeper",
+            "MemoryStorage"
+          ],
+          "tag": "v0"
+        }
+      ],
+      "modules": [
+        {
+          "name": "memory.js",
+          "r2Key": "blobs/modules/04e0af0f2b6feb0416171d08f65ed5190d6353066820b23bac0d75da6cfaa652",
+          "sha256": "04e0af0f2b6feb0416171d08f65ed5190d6353066820b23bac0d75da6cfaa652",
+          "size": 58,
+          "type": "esm"
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "logs": {
+          "invocation_logs": false
+        }
+      },
+      "shortName": "memory",
+      "singleton": true,
+      "vars": {
+        "BASE_URL": "$PUBLIC_BASE_URL/gatekeeper/memory"
+      }
+    },
     "gatekeeper-notion": {
       "bindings": [
         {
