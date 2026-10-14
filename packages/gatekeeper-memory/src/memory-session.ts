@@ -41,19 +41,19 @@ export const MEMORY_WRITE_ACTION_KIND: ActionKind = {
 // ---------------------------------------------------------------------------
 
 export interface MemoryStorageStub {
-  search(query: string, opts?: { type?: string; tag?: string; limit?: number; regex?: boolean }): Promise<MemorySearchResult>;
-  get(id: string, opts?: { full?: boolean }): Promise<MemoryGetResult>;
+  search(query: string, opts?: { type?: string; tag?: string; limit?: number; regex?: boolean }, viewer?: string): Promise<MemorySearchResult>;
+  get(id: string, opts?: { full?: boolean }, viewer?: string): Promise<MemoryGetResult>;
   add(args: {
     title: string; type: string; body: string;
-    tags?: string | string[]; confidence?: number; author?: string; scope?: string;
-  }): Promise<MemoryAddResult>;
+    tags?: string | string[]; confidence?: number; author?: string; scope?: string; shared?: boolean;
+  }, viewer?: string): Promise<MemoryAddResult>;
   update(id: string, patch: {
     title?: string; body?: string; tags?: string | string[]; confidence?: number;
-  }): Promise<MemoryUpdateResult>;
-  delete(id: string): Promise<MemoryDeleteResult>;
-  stats(): Promise<MemoryStats>;
+  }, viewer?: string): Promise<MemoryUpdateResult>;
+  delete(id: string, viewer?: string): Promise<MemoryDeleteResult>;
+  stats(viewer?: string): Promise<MemoryStats>;
   help(): Promise<string>;
-  dedupCheck(title: string): Promise<{ deduped: boolean; mergedInto?: string; commit: string }>;
+  dedupCheck(title: string, viewer?: string): Promise<{ deduped: boolean; mergedInto?: string; commit: string }>;
 }
 
 // ---------------------------------------------------------------------------
@@ -62,7 +62,9 @@ export interface MemoryStorageStub {
 
 export interface PendingWriteOp {
   kind: "add" | "update" | "delete";
-  addArgs?: { title: string; type: string; body: string; tags?: string | string[]; confidence?: number; author?: string; scope?: string };
+  /** The account id whose namespaces the replay acts in. */
+  viewer: string;
+  addArgs?: { title: string; type: string; body: string; tags?: string | string[]; confidence?: number; author?: string; scope?: string; shared?: boolean };
   updateArgs?: { id: string; patch: { title?: string; body?: string; tags?: string | string[]; confidence?: number } };
   deleteArgs?: { id: string };
 }
@@ -127,7 +129,7 @@ export class MemorySession extends NativeRpcTarget {
     query: string,
     opts?: { type?: string; tag?: string; limit?: number; regex?: boolean },
   ): Promise<MemorySearchResult> {
-    let result = await this.#storage.search(query, opts);
+    let result = await this.#storage.search(query, opts, this.#accountId);
     if (result.total > 0 || result.results.length > 0) {
       await this.#authorizeObservation(`searched '${query}' (${result.total} match${result.total === 1 ? "" : "es"})`);
     }
@@ -135,13 +137,13 @@ export class MemorySession extends NativeRpcTarget {
   }
 
   async get(id: string, opts?: { full?: boolean }): Promise<MemoryGetResult> {
-    let result = await this.#storage.get(id, opts);
+    let result = await this.#storage.get(id, opts, this.#accountId);
     await this.#authorizeObservation(`read memory ${id} (${result.title})`);
     return result;
   }
 
   async stats(): Promise<MemoryStats> {
-    let result = await this.#storage.stats();
+    let result = await this.#storage.stats(this.#accountId);
     await this.#authorizeObservation(`read memory stats (${result.total} total, ${result.dirty} dirty)`);
     return result;
   }
@@ -160,6 +162,7 @@ export class MemorySession extends NativeRpcTarget {
     confidence?: number;
     author?: string;
     scope?: string;
+    shared?: boolean;
   }): Promise<MemoryAddResult> {
     // Validate synchronously (fail fast before submitting)
     let titleErr = validateTitle(args.title);
@@ -178,7 +181,7 @@ export class MemorySession extends NativeRpcTarget {
     if (finding) throw secretError(finding);
 
     // Dedup pre-check: no write needed if we hit an existing memory
-    let dedup = await this.#storage.dedupCheck(args.title);
+    let dedup = await this.#storage.dedupCheck(args.title, this.#accountId);
     if (dedup.deduped && dedup.mergedInto) {
       return { id: dedup.mergedInto, deduped: true, mergedInto: dedup.mergedInto, commit: dedup.commit };
     }
@@ -191,6 +194,7 @@ export class MemorySession extends NativeRpcTarget {
     let actionId = await this.#sessionContext.nextActionId();
     await this.#sessionContext.putPendingOp(actionId, {
       kind: "add",
+      viewer: this.#accountId,
       addArgs: {
         title: args.title,
         type: args.type,
@@ -199,6 +203,7 @@ export class MemorySession extends NativeRpcTarget {
         confidence: clampConfidence(args.confidence),
         author: args.author ?? this.#accountId,
         scope: args.scope ?? "",
+        shared: args.shared ?? false,
       },
     });
     await this.#approvalQueue.submitAction(actionId, {
@@ -218,7 +223,7 @@ export class MemorySession extends NativeRpcTarget {
     title?: string; body?: string; tags?: string | string[]; confidence?: number;
   }): Promise<MemoryUpdateResult> {
     // Existence pre-check: surface NOT_FOUND synchronously
-    await this.#storage.get(id);
+    await this.#storage.get(id, undefined, this.#accountId);
 
     // Validate synchronously
     if (patch.title !== undefined) {
@@ -239,6 +244,7 @@ export class MemorySession extends NativeRpcTarget {
     let actionId = await this.#sessionContext.nextActionId();
     await this.#sessionContext.putPendingOp(actionId, {
       kind: "update",
+      viewer: this.#accountId,
       updateArgs: { id, patch: { title: patch.title, body: patch.body, tags: patch.tags, confidence: patch.confidence } },
     });
     await this.#approvalQueue.submitAction(actionId, {
@@ -257,15 +263,16 @@ export class MemorySession extends NativeRpcTarget {
   async delete(id: string): Promise<MemoryDeleteResult> {
     // Idempotent: deleting a missing memory is a no-op success (no action needed)
     try {
-      await this.#storage.get(id);
+      await this.#storage.get(id, undefined, this.#accountId);
     } catch {
-      let stats = await this.#storage.stats();
+      let stats = await this.#storage.stats(this.#accountId);
       return { id, deleted: true, commit: stats.lastSync };
     }
 
     let actionId = await this.#sessionContext.nextActionId();
     await this.#sessionContext.putPendingOp(actionId, {
       kind: "delete",
+      viewer: this.#accountId,
       deleteArgs: { id },
     });
     await this.#approvalQueue.submitAction(actionId, {

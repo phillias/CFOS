@@ -1,6 +1,8 @@
 // Memory gatekeeper: the agent-facing facet Durable Object, the auto-provisioned account, and
-// the vendor entrypoint. The facet holds per-user pending write ops (action queue); all shared
-// data lives in the MemoryStorage DO keyed by sharingDomain (account-wide per design §11).
+// the vendor entrypoint. The facet holds per-user pending write ops (action queue); all memory
+// data lives in the MemoryStorage DO keyed by sharingDomain. Each account acts in its own
+// private namespace plus the shared namespace, enforced by the storage layer — this facet
+// carries the per-user viewer identity (accountId) that scopes every store call.
 
 import {
   DurableObject,
@@ -92,7 +94,8 @@ export class MemoryAccount
     return {};
   }
   async revoke(): Promise<void> {
-    // Shared store survives account revocation — memories are account-wide by design.
+    // Shared memories survive account revocation; the revoked account's private namespace
+    // stays in storage but is unreachable (no account id can name it again).
   }
   reconnect(): never {
     throw new Error("Memory is a singleton gatekeeper; it has no connect flow.");
@@ -207,12 +210,14 @@ export class MemoryGatekeeper
     let storage = this.#storage();
     // REPO_UNAVAILABLE / SYNC_CONFLICT already queued the write in the outbox inside the store;
     // rethrow so the workshop records the failure on the action.
+    // The replay runs as the op's originating account (viewer), so it stays inside that
+    // account's namespaces; ops recorded before the viewer field existed replay as shared.
     if (op.kind === "add" && op.addArgs) {
-      await storage.add(op.addArgs);
+      await storage.add(op.addArgs, op.viewer);
     } else if (op.kind === "update" && op.updateArgs) {
-      await storage.update(op.updateArgs.id, op.updateArgs.patch);
+      await storage.update(op.updateArgs.id, op.updateArgs.patch, op.viewer);
     } else if (op.kind === "delete" && op.deleteArgs) {
-      await storage.delete(op.deleteArgs.id);
+      await storage.delete(op.deleteArgs.id, op.viewer);
     }
     await this.#deletePendingOp(action);
   }

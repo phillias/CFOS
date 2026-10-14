@@ -158,6 +158,7 @@ describe("frontmatter round-trip", () => {
     updated: "2026-10-12T01:00:00Z",
     author: "acct-1",
     scope: "fleet",
+    owner: "acct-1",
   };
 
   it("serializes and parses back identically", () => {
@@ -176,6 +177,19 @@ describe("frontmatter round-trip", () => {
     expect(parsed!.fm.version).toBe(1);
     expect(parsed!.fm.author).toBe("");
     expect(parsed!.fm.scope).toBe("");
+    expect(parsed!.fm.owner).toBe("");
+  });
+
+  it("parses a v1 file (no owner) as shared without losing anything", () => {
+    // A v1-era file: identical frontmatter shape minus the owner line.
+    let content = serializeMemoryFile({ ...fm, owner: "" }, "Body line one.\nBody line two.")
+      .replace(/^owner: .*\n/m, "");
+    let parsed = parseMemoryFile(content);
+    expect(parsed).not.toBeNull();
+    expect(parsed!.fm.owner).toBe("");
+    expect(parsed!.fm.author).toBe("acct-1");
+    expect(parsed!.fm.scope).toBe("fleet");
+    expect(parsed!.body).toBe("Body line one.\nBody line two.");
   });
 
   it("rejects malformed files", () => {

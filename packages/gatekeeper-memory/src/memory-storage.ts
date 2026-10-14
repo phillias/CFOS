@@ -1,6 +1,8 @@
-// MemoryStorage: the account-wide shared Durable Object holding the SQLite memory index and
-// the git mirror. Reached via ctx.exports.MemoryStorage.getByName(sharingDomain). All
-// MemoryStore logic delegates to MemoryStoreCore over a ctx.storage.sql adapter.
+// MemoryStorage: the shared Durable Object holding the SQLite memory index and the git mirror.
+// Reached via ctx.exports.MemoryStorage.getByName(sharingDomain). All MemoryStore logic
+// delegates to MemoryStoreCore over a ctx.storage.sql adapter. Every call carries the
+// caller's account id (viewer); MemoryStoreCore enforces private/shared namespace
+// visibility in the SQL layer, so one physical store safely hosts every account.
 
 import { DurableObject } from "cloudflare:workers";
 import {
@@ -114,41 +116,42 @@ export class MemoryStorage extends DurableObject<Cloudflare.Env, MemoryStoragePr
   async search(
     query: string,
     opts?: { type?: string; tag?: string; limit?: number; regex?: boolean },
+    viewer = "",
   ): Promise<MemorySearchResult> {
-    return this.#store().search(query, opts);
+    return this.#store().search(query, opts, viewer);
   }
 
-  async get(id: string, opts?: { full?: boolean }): Promise<MemoryGetResult> {
-    return this.#store().get(id, opts);
+  async get(id: string, opts?: { full?: boolean }, viewer = ""): Promise<MemoryGetResult> {
+    return this.#store().get(id, opts, viewer);
   }
 
   async add(args: {
     title: string; type: string; body: string;
-    tags?: string | string[]; confidence?: number; author?: string; scope?: string;
-  }): Promise<MemoryAddResult> {
-    return this.#store().add(args);
+    tags?: string | string[]; confidence?: number; author?: string; scope?: string; shared?: boolean;
+  }, viewer = ""): Promise<MemoryAddResult> {
+    return this.#store().add(args, viewer);
   }
 
   async update(id: string, patch: {
     title?: string; body?: string; tags?: string | string[]; confidence?: number;
-  }): Promise<MemoryUpdateResult> {
-    return this.#store().update(id, patch);
+  }, viewer = ""): Promise<MemoryUpdateResult> {
+    return this.#store().update(id, patch, viewer);
   }
 
-  async delete(id: string): Promise<MemoryDeleteResult> {
-    return this.#store().delete(id);
+  async delete(id: string, viewer = ""): Promise<MemoryDeleteResult> {
+    return this.#store().delete(id, viewer);
   }
 
-  async stats(): Promise<MemoryStats> {
-    return this.#store().stats();
+  async stats(viewer = ""): Promise<MemoryStats> {
+    return this.#store().stats(viewer);
   }
 
   async help(): Promise<string> {
     return this.#store().help();
   }
 
-  async dedupCheck(title: string): Promise<{ deduped: boolean; mergedInto?: string; commit: string }> {
-    return this.#store().dedupCheck(title);
+  async dedupCheck(title: string, viewer = ""): Promise<{ deduped: boolean; mergedInto?: string; commit: string }> {
+    return this.#store().dedupCheck(title, viewer);
   }
 
   /** Called by MemoryGatekeeper.applyAction to flush the outbox after a queued write. */
