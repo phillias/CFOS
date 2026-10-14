@@ -1,0 +1,46 @@
+
+[scenario] A private memory is unreachable by another account through every read/write path
+  PASS  B search('*') sees 0
+  PASS  B search(term) sees 0
+  PASS  B get() throws NOT_FOUND
+  PASS  B get() message is byte-exact
+  PASS  B stats total 0
+  PASS  B dedupCheck no hit
+  PASS  B update() throws NOT_FOUND
+  PASS  A still reads its own memory
+
+[scenario] A shared memory is visible to every account and mutations propagate
+  PASS  B search sees shared
+  PASS  B get sees shared
+  PASS  B stats counts shared
+  PASS  B dedupCheck hits shared
+  PASS  B sees A's update
+  PASS  viewerless read sees shared only
+
+[scenario] Writes are private by default; viewerless add is refused unless shared:true
+  PASS  default write invisible to B
+  PASS  default write visible to A
+  PASS  viewerless add refused with VALIDATION
+  PASS  refusal message names the viewer requirement
+  PASS  viewerless shared write lands shared
+
+[scenario] A raw bypass insert is still scoped by the SQL visibility predicate
+  PASS  B cannot search the raw row
+  PASS  B get() on raw row throws NOT_FOUND
+  PASS  B stats excludes raw row
+  PASS  A sees the raw row
+
+[scenario] v1 database migrates in place: owner column added, v1 rows become shared
+  PASS  migrated row counted for A
+  PASS  owner column exists after migration
+  PASS  v1 row visible to B (shared)
+  PASS  v1 row body preserved
+
+[scenario] Legacy v1 outbox payload and owner-less markdown replay into the shared namespace
+  PASS  legacy outbox replayed into shared
+  PASS  outbox drained
+  PASS  v1 markdown has no owner line
+  PASS  v1 markdown parses owner as '' (shared)
+  PASS  reindexed v1 file visible to B
+
+ALL SCENARIOS PASSED

@@ -1,0 +1,6 @@
+Live workerd DO harness attempt (blocked by host glibc)
+Command: npx vitest run --config vitest.workerd.config.ts
+
+Error: @cloudflare/workerd-linux-arm64/bin/workerd: /lib/aarch64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by .../workerd)
+Host: Ubuntu GLIBC 2.31-0ubuntu9.18 (aarch64). The pinned workerd requires GLIBC 2.32/2.33/2.34/2.35.
+Result: the Cloudflare Workers runtime (workerd) cannot start on this host, so the MemoryStorage Durable Object cannot be driven inside workerd here.

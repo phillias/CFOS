@@ -1,0 +1,168 @@
+
+ RUN  v4.1.11 /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory
+
+(node:2195572) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ __tests__/memory-format.test.ts > titleSlug > normalizes to lowercase kebab-case 2ms
+ ✓ __tests__/memory-format.test.ts > titleSlug > folds unicode via NFKD 0ms
+ ✓ __tests__/memory-format.test.ts > titleSlug > falls back to untitled when empty 0ms
+ ✓ __tests__/memory-format.test.ts > titleSlug > caps at 80 chars without a trailing dash 24ms
+ ✓ __tests__/memory-format.test.ts > memory ids > composes id from date prefix and slug 0ms
+ ✓ __tests__/memory-format.test.ts > memory ids > uses the provided date object 1ms
+ ✓ __tests__/memory-format.test.ts > memory ids > parses valid ids 1ms
+ ✓ __tests__/memory-format.test.ts > memory ids > rejects malformed ids 1ms
+ ✓ __tests__/memory-format.test.ts > tag normalization > normalizes case, trims, dedups, and joins with commas 2ms
+ ✓ __tests__/memory-format.test.ts > tag normalization > parses stored tags back into a list 0ms
+ ✓ __tests__/memory-format.test.ts > scanForSecrets > detects each secret shape 7ms
+ ✓ __tests__/memory-format.test.ts > scanForSecrets > detects long key-value assignments without digits 0ms
+ ✓ __tests__/memory-format.test.ts > scanForSecrets > scans every persisted field, not just title and body 0ms
+ ✓ __tests__/memory-format.test.ts > scanForSecrets > scans the title too 0ms
+ ✓ __tests__/memory-format.test.ts > scanForSecrets > allows prose that merely mentions secret words 0ms
+ ✓ __tests__/memory-format.test.ts > jaccard dedup > is 1 for identical word sets 0ms
+ ✓ __tests__/memory-format.test.ts > jaccard dedup > drops stop words and short words 0ms
+ ✓ __tests__/memory-format.test.ts > jaccard dedup > is 0 for disjoint sets 0ms
+ ✓ __tests__/memory-format.test.ts > jaccard dedup > flags duplicates at the threshold 0ms
+ ✓ __tests__/memory-format.test.ts > frontmatter round-trip > serializes and parses back identically 35ms
+ ✓ __tests__/memory-format.test.ts > frontmatter round-trip > defaults optional fields when parsing 1ms
+ ✓ __tests__/memory-format.test.ts > frontmatter round-trip > parses a v1 file (no owner) as shared without losing anything 5ms
+ ✓ __tests__/memory-format.test.ts > frontmatter round-trip > rejects malformed files 4ms
+ ✓ __tests__/memory-format.test.ts > literal and regex scoring > tokenizes queries dropping short words and the star 0ms
+ ✓ __tests__/memory-format.test.ts > literal and regex scoring > weighs title hits 10x body hits 0ms
+ ✓ __tests__/memory-format.test.ts > literal and regex scoring > scores regex matches per occurrence 1ms
+ ✓ __tests__/memory-store.test.ts > schema and zero-state > stats() on a fresh store is a definitive empty state 5ms
+ ✓ __tests__/memory-store.test.ts > schema and zero-state > help() explains methods, the write policy, the secret policy, and namespaces 1ms
+ ✓ __tests__/memory-store.test.ts > schema and zero-state > exports SCHEMA_VERSION 2 0ms
+ ✓ __tests__/memory-store.test.ts > add and search (no repo: local index only) > add() writes the index and search() finds it with a TOON-shaped result 25ms
+ ✓ __tests__/memory-store.test.ts > add and search (no repo: local index only) > normalizes tags and clamps confidence at write time 3ms
+ ✓ __tests__/memory-store.test.ts > add and search (no repo: local index only) > records author and scope in frontmatter 16ms
+ ✓ __tests__/memory-store.test.ts > add and search (no repo: local index only) > search() with no matches returns a definitive empty state with a hint 3ms
+ ✓ __tests__/memory-store.test.ts > validation and secrets (structured errors, no outbox growth) > rejects invalid inputs with VALIDATION 18ms
+ ✓ __tests__/memory-store.test.ts > validation and secrets (structured errors, no outbox growth) > refuses secret-shaped bodies with the exact §7 TOON error 3ms
+ ✓ __tests__/memory-store.test.ts > validation and secrets (structured errors, no outbox growth) > refuses secret-shaped values in tags, author, and scope 7ms
+ ✓ __tests__/memory-store.test.ts > validation and secrets (structured errors, no outbox growth) > refuses secret-shaped values in an update patch's tags without mutating the row 3ms
+ ✓ __tests__/memory-store.test.ts > validation and secrets (structured errors, no outbox growth) > rejects unknown search type filters 1ms
+ ✓ __tests__/memory-store.test.ts > dedup > re-adding a near-identical title is a no-op success merging into the original 3ms
+ ✓ __tests__/memory-store.test.ts > dedup > different topics do not dedup 2ms
+ ✓ __tests__/memory-store.test.ts > dedup > dedupCheck() reports without writing 2ms
+ ✓ __tests__/memory-store.test.ts > get: preview vs full body > truncates the body to 1500 chars with a hint unless {full:true} 12ms
+ ✓ __tests__/memory-format.test.ts > buildSnippet > centers on the first query hit and bounds the length 0ms
+ ✓ __tests__/memory-format.test.ts > buildSnippet > falls back to first token hit, then to a head slice 0ms
+ ✓ __tests__/memory-format.test.ts > validation > validates titles 1ms
+ ✓ __tests__/memory-format.test.ts > validation > validates bodies by byte length 1ms
+ ✓ __tests__/memory-format.test.ts > validation > validates types against the closed set 0ms
+ ✓ __tests__/memory-format.test.ts > validation > clamps confidence and search limits 3ms
+ ✓ __tests__/memory-format.test.ts > TOON formatters (report §7 shapes) > formats a structured error as error/code/help lines 2ms
+ ✓ __tests__/memory-format.test.ts > TOON formatters (report §7 shapes) > formats a secret refusal exactly as specified 0ms
+ ✓ __tests__/memory-format.test.ts > TOON formatters (report §7 shapes) > formats stats 0ms
+ ✓ __tests__/memory-format.test.ts > TOON formatters (report §7 shapes) > formats add results 0ms
+ ✓ __tests__/memory-format.test.ts > TOON formatters (report §7 shapes) > formats search results and hints 3ms
+ ✓ __tests__/memory-format.test.ts > TOON formatters (report §7 shapes) > formats get output 0ms
+stderr | __tests__/memory-store.test.ts > repo round-trip and reindex > serves the local mirror when the repo goes unavailable
+{
+  component: 'gatekeeper.memory',
+  vendorId: 'memory',
+  event: 'memory.repo.fetch.failed',
+  error: 'Error: artifacts unavailable (simulated)',
+  errorStack: 'Error: artifacts unavailable (simulated)\n' +
+    '    at MockRepo.ensureRepo (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:70:48)\n' +
+    '    at MemoryStoreCore.#refreshFromRepo (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:409:24)\n' +
+    '    at MemoryStoreCore.ensureFresh (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:402:16)\n' +
+    '    at MemoryStoreCore.search (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:572:16)\n' +
+    '    at /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:563:30\n' +
+    '    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20',
+  message: 'memory repo fetch failed; serving local mirror'
+}
+
+stderr | __tests__/memory-store.test.ts > outbox: repo-unavailable and sync-conflict paths > a failed write queues in the outbox and reports REPO_UNAVAILABLE
+{
+  component: 'gatekeeper.memory',
+  vendorId: 'memory',
+  event: 'memory.repo.fetch.failed',
+  error: 'Error: artifacts unavailable (simulated)',
+  errorStack: 'Error: artifacts unavailable (simulated)\n' +
+    '    at MockRepo.ensureRepo (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:70:48)\n' +
+    '    at MemoryStoreCore.#refreshFromRepo (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:409:24)\n' +
+    '    at MemoryStoreCore.ensureFresh (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:402:16)\n' +
+    '    at MemoryStoreCore.add (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:735:16)\n' +
+    '    at /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:577:13\n' +
+    '    at expectError (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:132:11)\n' +
+    '    at /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:576:21\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20',
+  message: 'memory repo fetch failed; serving local mirror'
+}
+
+ ✓ __tests__/memory-store.test.ts > get: preview vs full body > get() on a missing id throws the exact §7 NOT_FOUND TOON error 1ms
+ ✓ __tests__/memory-store.test.ts > update and delete > update() bumps the version and writes through 3ms
+ ✓ __tests__/memory-store.test.ts > update and delete > update() on a missing id throws NOT_FOUND; patch title length is validated 2ms
+ ✓ __tests__/memory-store.test.ts > update and delete > delete() is idempotent 4ms
+ ✓ __tests__/memory-store.test.ts > search modes and filters > match-all '*' returns everything ordered by recency 14ms
+ ✓ __tests__/memory-store.test.ts > search modes and filters > filters by type and by tag (including middle tags) 4ms
+ ✓ __tests__/memory-store.test.ts > search modes and filters > regex mode scores per match; invalid regex is VALIDATION 3ms
+ ✓ __tests__/memory-store.test.ts > search modes and filters > limits results and reports truncation with a hint 3ms
+ ✓ __tests__/memory-store.test.ts > search modes and filters > escapes LIKE wildcards in literal queries 2ms
+ ✓ __tests__/memory-store.test.ts > repo round-trip and reindex > add() pushes frontmatter markdown to the repo and indexes it 28ms
+ ✓ __tests__/memory-store.test.ts > repo round-trip and reindex > picks up edits made directly in the repo (human git clone path) 4ms
+ ✓ __tests__/memory-store.test.ts > repo round-trip and reindex > serves the local mirror when the repo goes unavailable 28ms
+ ✓ __tests__/memory-store.test.ts > outbox: repo-unavailable and sync-conflict paths > a failed write queues in the outbox and reports REPO_UNAVAILABLE 7ms
+stderr | __tests__/memory-store.test.ts > outbox: repo-unavailable and sync-conflict paths > flushOutbox() lands the queued write once the repo recovers
+{
+  component: 'gatekeeper.memory',
+  vendorId: 'memory',
+  event: 'memory.repo.fetch.failed',
+  error: 'Error: artifacts unavailable (simulated)',
+  errorStack: 'Error: artifacts unavailable (simulated)\n' +
+    '    at MockRepo.ensureRepo (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:70:48)\n' +
+    '    at MemoryStoreCore.#refreshFromRepo (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:409:24)\n' +
+    '    at MemoryStoreCore.ensureFresh (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:402:16)\n' +
+    '    at MemoryStoreCore.add (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:735:16)\n' +
+    '    at /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:599:17\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at runWithCancel (file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)',
+  message: 'memory repo fetch failed; serving local mirror'
+}
+
+stderr | __tests__/memory-store.test.ts > outbox: repo-unavailable and sync-conflict paths > outbox replays that now fail validation drop the op instead of looping
+{
+  component: 'gatekeeper.memory',
+  vendorId: 'memory',
+  event: 'memory.repo.fetch.failed',
+  error: 'Error: artifacts unavailable (simulated)',
+  errorStack: 'Error: artifacts unavailable (simulated)\n' +
+    '    at MockRepo.ensureRepo (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:70:48)\n' +
+    '    at MemoryStoreCore.#refreshFromRepo (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:409:24)\n' +
+    '    at MemoryStoreCore.ensureFresh (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:402:16)\n' +
+    '    at MemoryStoreCore.add (/home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/src/memory-store.ts:735:16)\n' +
+    '    at /home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/packages/gatekeeper-memory/__tests__/memory-store.test.ts:629:17\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n' +
+    '    at file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at runWithCancel (file:///home/ubuntu/.no-mistakes/worktrees/56f7ac114940/01M4VXZC8WJFXRV625JK2VN82E/node_modules/.pnpm/@vitest+runner@4.1.11/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)',
+  message: 'memory repo fetch failed; serving local mirror'
+}
+
+ ✓ __tests__/memory-store.test.ts > outbox: repo-unavailable and sync-conflict paths > flushOutbox() lands the queued write once the repo recovers 14ms
+ ✓ __tests__/memory-store.test.ts > outbox: repo-unavailable and sync-conflict paths > a rejected push reports SYNC_CONFLICT and keeps the write in the outbox 2ms
+ ✓ __tests__/memory-store.test.ts > outbox: repo-unavailable and sync-conflict paths > outbox replays that now fail validation drop the op instead of looping 4ms
+ ✓ __tests__/memory-store.test.ts > user scoping: private namespaces > a private memory is invisible to another account through every read path 5ms
+ ✓ __tests__/memory-store.test.ts > user scoping: private namespaces > B cannot take over A's id: a private memory B can't see does not dedup or collide 5ms
+ ✓ __tests__/memory-store.test.ts > user scoping: private namespaces > shared memories ({shared:true}) are visible to every account 8ms
+ ✓ __tests__/memory-store.test.ts > user scoping: private namespaces > add() without a viewer and without shared:true is refused (fail-closed) 2ms
+ ✓ __tests__/memory-store.test.ts > user scoping: private namespaces > empty-viewer reads see the shared namespace only, never private rows 4ms
+ ✓ __tests__/memory-store.test.ts > user scoping: storage-layer enforcement > every read path issues SQL carrying the owner-visibility predicate 2ms
+ ✓ __tests__/memory-store.test.ts > user scoping: storage-layer enforcement > a row inserted by a scope-ignoring adapter is still invisible to other accounts 2ms
+ ✓ __tests__/memory-store.test.ts > v1 → v2 migration > migrates an existing v1 database in place: adds owner, v1 rows become shared 3ms
+ ✓ __tests__/memory-store.test.ts > v1 → v2 migration > reindexes v1 markdown files (no owner frontmatter) as shared 5ms
+ ✓ __tests__/memory-store.test.ts > v1 → v2 migration > replays a legacy v1 outbox payload (no viewer) into the shared namespace 8ms
+
+ Test Files  2 passed (2)
+      Tests  80 passed (80)
+   Start at  22:17:33
+   Duration  1.11s (transform 937ms, setup 0ms, import 1.15s, tests 433ms, environment 0ms)
+

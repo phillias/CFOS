@@ -1,0 +1,1426 @@
+{
+  "domain": "scope-1791942236175-s7",
+  "results": [
+    {
+      "name": "Private memory is invisible to another account across search/get/stats/dedupCheck/update/delete",
+      "result": "pass",
+      "steps": [
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-alpha-private-deploy-note",
+              "deduped": false,
+              "commit": "pending"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [
+                {
+                  "id": "d-2026-10-14-alpha-private-deploy-note",
+                  "type": "howto",
+                  "title": "Alpha private deploy note",
+                  "tags": "",
+                  "confidence": 0.5,
+                  "score": 0,
+                  "snippet": "use pnpm build"
+                }
+              ],
+              "total": 1,
+              "truncated": false
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [],
+              "total": 0,
+              "truncated": false,
+              "hint": "0 memories found matching '*' — try broader terms, or add() to record what you learned"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [],
+              "total": 0,
+              "truncated": false,
+              "hint": "0 memories found matching 'deploy note' — try broader terms, or add() to record what you learned"
+            }
+          }
+        },
+        {
+          "status": 500,
+          "json": {
+            "ok": false,
+            "error": "error:no memory with id d-2026-10-14-alpha-private-deploy-note\ncode:NOT_FOUND\nhelp:list ids with search('*') or stats(); ids are d-YYYY-MM-DD-<slug>",
+            "name": "MemoryStoreError"
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "total": 0,
+              "byType": {
+                "constraint": 0,
+                "decision": 0,
+                "failure": 0,
+                "howto": 0,
+                "preference": 0
+              },
+              "lastSync": "",
+              "dirty": 0,
+              "repoOk": true,
+              "semantic": false
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "deduped": false,
+              "commit": ""
+            }
+          }
+        },
+        {
+          "status": 500,
+          "json": {
+            "ok": false,
+            "error": "error:no memory with id d-2026-10-14-alpha-private-deploy-note\ncode:NOT_FOUND\nhelp:list ids with search('*') or stats(); ids are d-YYYY-MM-DD-<slug>",
+            "name": "MemoryStoreError"
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-alpha-private-deploy-note",
+              "deleted": true,
+              "commit": ""
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-alpha-private-deploy-note",
+              "type": "howto",
+              "title": "Alpha private deploy note",
+              "tags": "",
+              "confidence": 0.5,
+              "version": 1,
+              "updated": "2026-10-14T01:43:56.316Z",
+              "author": "acct-A",
+              "body": "use pnpm build",
+              "bodyBytes": 14
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "B's near-identical private write cannot take over or merge into A's private memory",
+      "result": "pass",
+      "steps": [
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-shared-release-process",
+              "deduped": false,
+              "commit": "pending"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-shared-release-process",
+              "deduped": false,
+              "commit": "pending"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "total": 1,
+              "byType": {
+                "constraint": 0,
+                "decision": 0,
+                "failure": 0,
+                "howto": 1,
+                "preference": 0
+              },
+              "lastSync": "",
+              "dirty": 0,
+              "repoOk": true,
+              "semantic": false
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "total": 1,
+              "byType": {
+                "constraint": 0,
+                "decision": 1,
+                "failure": 0,
+                "howto": 0,
+                "preference": 0
+              },
+              "lastSync": "",
+              "dirty": 0,
+              "repoOk": true,
+              "semantic": false
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [
+                {
+                  "id": "d-2026-10-14-shared-release-process",
+                  "type": "howto",
+                  "title": "Shared Release Process",
+                  "tags": "",
+                  "confidence": 0.5,
+                  "score": 20,
+                  "snippet": "b"
+                }
+              ],
+              "total": 1,
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shared ({shared:true}) memory is visible to every account and cross-account updatable",
+      "result": "pass",
+      "steps": [
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-fleet-wide-deploy-convention",
+              "deduped": false,
+              "commit": "pending"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [
+                {
+                  "id": "d-2026-10-14-fleet-wide-deploy-convention",
+                  "type": "decision",
+                  "title": "Fleet-wide deploy convention",
+                  "tags": "",
+                  "confidence": 0.5,
+                  "score": 21,
+                  "snippet": "deploy via scripts/deploy.ts"
+                }
+              ],
+              "total": 1,
+              "truncated": false
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-fleet-wide-deploy-convention",
+              "type": "decision",
+              "title": "Fleet-wide deploy convention",
+              "tags": "",
+              "confidence": 0.5,
+              "version": 1,
+              "updated": "2026-10-14T01:43:56.950Z",
+              "author": "acct-A3",
+              "body": "deploy via scripts/deploy.ts",
+              "bodyBytes": 28
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "total": 1,
+              "byType": {
+                "constraint": 0,
+                "decision": 1,
+                "failure": 0,
+                "howto": 0,
+                "preference": 0
+              },
+              "lastSync": "",
+              "dirty": 0,
+              "repoOk": true,
+              "semantic": false
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "deduped": true,
+              "mergedInto": "d-2026-10-14-fleet-wide-deploy-convention",
+              "commit": ""
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-fleet-wide-deploy-convention",
+              "version": 0,
+              "commit": "pending"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-fleet-wide-deploy-convention",
+              "type": "decision",
+              "title": "Fleet-wide deploy convention",
+              "tags": "",
+              "confidence": 0.5,
+              "version": 2,
+              "updated": "2026-10-14T01:43:57.077Z",
+              "author": "acct-A3",
+              "body": "updated body",
+              "bodyBytes": 12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Writes are private by default; only shared:true opts into the shared namespace",
+      "result": "pass",
+      "steps": [
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-default-private-preference",
+              "deduped": false,
+              "commit": "pending"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-explicit-shared-preference",
+              "deduped": false,
+              "commit": "pending"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [
+                {
+                  "id": "d-2026-10-14-explicit-shared-preference",
+                  "type": "preference",
+                  "title": "Explicit shared preference",
+                  "tags": "",
+                  "confidence": 0.5,
+                  "score": 0,
+                  "snippet": "s"
+                }
+              ],
+              "total": 1,
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fail-closed: viewerless add is refused; viewerless reads see the shared namespace only",
+      "result": "pass",
+      "steps": [
+        {
+          "status": 500,
+          "json": {
+            "ok": false,
+            "error": "error:add() requires a viewer (the caller's account id); pass shared:true to write to the shared namespace\ncode:VALIDATION\nhelp:fix the input and retry; see help() for the write policy",
+            "name": "MemoryStoreError"
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [
+                {
+                  "id": "d-2026-10-14-shared-beta-five",
+                  "type": "decision",
+                  "title": "Shared beta five",
+                  "tags": "",
+                  "confidence": 0.5,
+                  "score": 0,
+                  "snippet": "b"
+                }
+              ],
+              "total": 1,
+              "truncated": false
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "total": 1,
+              "byType": {
+                "constraint": 0,
+                "decision": 1,
+                "failure": 0,
+                "howto": 0,
+                "preference": 0
+              },
+              "lastSync": "",
+              "dirty": 0,
+              "repoOk": true,
+              "semantic": false
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-viewerless-shared-write",
+              "deduped": false,
+              "commit": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Storage-layer enforcement: direct store calls with an explicit viewer are scoped (not the session)",
+      "result": "pass",
+      "steps": [
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "id": "d-2026-10-14-directly-written-private-row",
+              "deduped": false,
+              "commit": ""
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [],
+              "total": 0,
+              "truncated": false,
+              "hint": "0 memories found matching '*' — try broader terms, or add() to record what you learned"
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": {
+              "results": [
+                {
+                  "id": "d-2026-10-14-directly-written-private-row",
+                  "type": "howto",
+                  "title": "Directly written private row",
+                  "tags": "",
+                  "confidence": 0.5,
+                  "score": 0,
+                  "snippet": "b"
+                }
+              ],
+              "total": 1,
+              "truncated": false
+            }
+          }
+        },
+        {
+          "status": 500,
+          "json": {
+            "ok": false,
+            "error": "error:no memory with id d-2026-10-14-directly-written-private-row\ncode:NOT_FOUND\nhelp:list ids with search('*') or stats(); ids are d-YYYY-MM-DD-<slug>",
+            "name": "MemoryStoreError"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gatekeeper protocol surface is unchanged (vendor/account describe, session start)",
+      "result": "pass",
+      "steps": [
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "vendorDescription": {
+              "displayName": "Memory",
+              "url": "https://workers.cloudflare.com/",
+              "logo": {
+                "url": "data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20256%20256'%20fill%3D'currentColor'%3E%3Cpath%20d%3D'M232%2C128a56%2C56%2C0%2C0%2C1-32%2C50.6A56%2C56%2C0%2C0%2C1%2C96%2C196v-4a52%2C52%2C0%2C0%2C1-45.3-26.4A48%2C48%2C0%2C0%2C1%2C32%2C72a48.6%2C48.6%2C0%2C0%2C1%2C8-.7A56%2C56%2C0%2C0%2C1%2C144%2C40h16a56%2C56%2C0%2C0%2C1%2C56%2C56v4A56%2C56%2C0%2C0%2C1%2C232%2C128Z'%2F%3E%3C%2Fsvg%3E"
+              },
+              "tagline": "Durable cross-session agent memory",
+              "description": "Search, record, and update durable cross-session memories (decisions, failures, how-tos, constraints, preferences), mirrored to a git repository you can clone. Enable this feature to let agents remember what they learn across sessions.",
+              "autoProvisionsAccount": true,
+              "providesAuth": false
+            },
+            "accountDescription": {
+              "displayName": "Memory",
+              "avatar": {
+                "url": "data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20256%20256'%20fill%3D'currentColor'%3E%3Cpath%20d%3D'M232%2C128a56%2C56%2C0%2C0%2C1-32%2C50.6A56%2C56%2C0%2C0%2C1%2C96%2C196v-4a52%2C52%2C0%2C0%2C1-45.3-26.4A48%2C48%2C0%2C0%2C1%2C32%2C72a48.6%2C48.6%2C0%2C0%2C1%2C8-.7A56%2C56%2C0%2C0%2C1%2C144%2C40h16a56%2C56%2C0%2C0%2C1%2C56%2C56v4A56%2C56%2C0%2C0%2C1%2C232%2C128Z'%2F%3E%3C%2Fsvg%3E"
+              },
+              "singleton": {
+                "tsType": "MemoryStore"
+              }
+            }
+          }
+        },
+        {
+          "status": 200,
+          "json": {
+            "ok": true,
+            "result": "Memory Store — durable cross-session memories (decisions, failures, how-tos, constraints, preferences).\n\nMethods:\n  search(query, opts?) — literal substring search over title+body; opts: {type, tag, limit (default 10, max 50), regex}\n    regex:true treats query as /pattern/ vs title+body\n  get(id, opts?) — fetch one memory; body truncated to 1500 chars unless {full:true}\n  add({title, type, body, tags?, confidence?, scope?}) — record a memory; idempotent (dedups on near-identical titles)\n  update(id, {title?, body?, tags?, confidence?}) — bump version and push\n  delete(id) — idempotent removal\n  stats() — totals, sync health, outbox depth\n\nWrite policy:\n  Belongs: durable facts, decisions with rationale, constraints, how-tos, failures with root cause, preferences, env gotchas.\n  Not: transient state, scratch, conversation recap, large code bodies, repo-tracked things, PII beyond identity strings.\n  Secrets NEVER: token/key/password/API-key/Bearer patterns are scanned and refused.\n\nNamespaces:\n  add() records privately to your account by default; pass shared:true to record account-wide.\n  search/get/stats see the shared namespace plus your own private memories — never another account's.\n\nCall search() FIRST to avoid re-deriving known facts; add() to persist what you learned.\nIds look like d-YYYY-MM-DD-<slug>; find them with search('*') or stats()."
+          }
+        }
+      ]
+    }
+  ],
+  "transcript": [
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A",
+        "method": "add",
+        "args": [
+          {
+            "title": "Alpha private deploy note",
+            "type": "howto",
+            "body": "use pnpm build"
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-alpha-private-deploy-note",
+          "deduped": false,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A",
+        "method": "search",
+        "args": [
+          "*"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [
+            {
+              "id": "d-2026-10-14-alpha-private-deploy-note",
+              "type": "howto",
+              "title": "Alpha private deploy note",
+              "tags": "",
+              "confidence": 0.5,
+              "score": 0,
+              "snippet": "use pnpm build"
+            }
+          ],
+          "total": 1,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B",
+        "method": "search",
+        "args": [
+          "*"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [],
+          "total": 0,
+          "truncated": false,
+          "hint": "0 memories found matching '*' — try broader terms, or add() to record what you learned"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B",
+        "method": "search",
+        "args": [
+          "deploy note"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [],
+          "total": 0,
+          "truncated": false,
+          "hint": "0 memories found matching 'deploy note' — try broader terms, or add() to record what you learned"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B",
+        "method": "get",
+        "args": [
+          "d-2026-10-14-alpha-private-deploy-note"
+        ]
+      },
+      "status": 500,
+      "json": {
+        "ok": false,
+        "error": "error:no memory with id d-2026-10-14-alpha-private-deploy-note\ncode:NOT_FOUND\nhelp:list ids with search('*') or stats(); ids are d-YYYY-MM-DD-<slug>",
+        "name": "MemoryStoreError"
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B",
+        "method": "stats",
+        "args": []
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "total": 0,
+          "byType": {
+            "constraint": 0,
+            "decision": 0,
+            "failure": 0,
+            "howto": 0,
+            "preference": 0
+          },
+          "lastSync": "",
+          "dirty": 0,
+          "repoOk": true,
+          "semantic": false
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "dedupCheck",
+        "args": [
+          "alpha private deploy note",
+          "acct-B"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "deduped": false,
+          "commit": ""
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B",
+        "method": "update",
+        "args": [
+          "d-2026-10-14-alpha-private-deploy-note",
+          {
+            "body": "hijacked"
+          }
+        ]
+      },
+      "status": 500,
+      "json": {
+        "ok": false,
+        "error": "error:no memory with id d-2026-10-14-alpha-private-deploy-note\ncode:NOT_FOUND\nhelp:list ids with search('*') or stats(); ids are d-YYYY-MM-DD-<slug>",
+        "name": "MemoryStoreError"
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B",
+        "method": "delete",
+        "args": [
+          "d-2026-10-14-alpha-private-deploy-note"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-alpha-private-deploy-note",
+          "deleted": true,
+          "commit": ""
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A",
+        "method": "get",
+        "args": [
+          "d-2026-10-14-alpha-private-deploy-note"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-alpha-private-deploy-note",
+          "type": "howto",
+          "title": "Alpha private deploy note",
+          "tags": "",
+          "confidence": 0.5,
+          "version": 1,
+          "updated": "2026-10-14T01:43:56.316Z",
+          "author": "acct-A",
+          "body": "use pnpm build",
+          "bodyBytes": 14
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A2",
+        "method": "add",
+        "args": [
+          {
+            "title": "Shared Release Process",
+            "type": "howto",
+            "body": "b"
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-shared-release-process",
+          "deduped": false,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B2",
+        "method": "add",
+        "args": [
+          {
+            "title": "shared release process",
+            "type": "decision",
+            "body": "c"
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-shared-release-process",
+          "deduped": false,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A2",
+        "method": "stats",
+        "args": []
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "total": 1,
+          "byType": {
+            "constraint": 0,
+            "decision": 0,
+            "failure": 0,
+            "howto": 1,
+            "preference": 0
+          },
+          "lastSync": "",
+          "dirty": 0,
+          "repoOk": true,
+          "semantic": false
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B2",
+        "method": "stats",
+        "args": []
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "total": 1,
+          "byType": {
+            "constraint": 0,
+            "decision": 1,
+            "failure": 0,
+            "howto": 0,
+            "preference": 0
+          },
+          "lastSync": "",
+          "dirty": 0,
+          "repoOk": true,
+          "semantic": false
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A2",
+        "method": "search",
+        "args": [
+          "release process"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [
+            {
+              "id": "d-2026-10-14-shared-release-process",
+              "type": "howto",
+              "title": "Shared Release Process",
+              "tags": "",
+              "confidence": 0.5,
+              "score": 20,
+              "snippet": "b"
+            }
+          ],
+          "total": 1,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A3",
+        "method": "add",
+        "args": [
+          {
+            "title": "Fleet-wide deploy convention",
+            "type": "decision",
+            "body": "deploy via scripts/deploy.ts",
+            "shared": true
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-fleet-wide-deploy-convention",
+          "deduped": false,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B3",
+        "method": "search",
+        "args": [
+          "deploy convention"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [
+            {
+              "id": "d-2026-10-14-fleet-wide-deploy-convention",
+              "type": "decision",
+              "title": "Fleet-wide deploy convention",
+              "tags": "",
+              "confidence": 0.5,
+              "score": 21,
+              "snippet": "deploy via scripts/deploy.ts"
+            }
+          ],
+          "total": 1,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B3",
+        "method": "get",
+        "args": [
+          "d-2026-10-14-fleet-wide-deploy-convention"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-fleet-wide-deploy-convention",
+          "type": "decision",
+          "title": "Fleet-wide deploy convention",
+          "tags": "",
+          "confidence": 0.5,
+          "version": 1,
+          "updated": "2026-10-14T01:43:56.950Z",
+          "author": "acct-A3",
+          "body": "deploy via scripts/deploy.ts",
+          "bodyBytes": 28
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B3",
+        "method": "stats",
+        "args": []
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "total": 1,
+          "byType": {
+            "constraint": 0,
+            "decision": 1,
+            "failure": 0,
+            "howto": 0,
+            "preference": 0
+          },
+          "lastSync": "",
+          "dirty": 0,
+          "repoOk": true,
+          "semantic": false
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "dedupCheck",
+        "args": [
+          "fleet-wide deploy convention",
+          "acct-B3"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "deduped": true,
+          "mergedInto": "d-2026-10-14-fleet-wide-deploy-convention",
+          "commit": ""
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A3",
+        "method": "update",
+        "args": [
+          "d-2026-10-14-fleet-wide-deploy-convention",
+          {
+            "body": "updated body"
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-fleet-wide-deploy-convention",
+          "version": 0,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B3",
+        "method": "get",
+        "args": [
+          "d-2026-10-14-fleet-wide-deploy-convention"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-fleet-wide-deploy-convention",
+          "type": "decision",
+          "title": "Fleet-wide deploy convention",
+          "tags": "",
+          "confidence": 0.5,
+          "version": 2,
+          "updated": "2026-10-14T01:43:57.077Z",
+          "author": "acct-A3",
+          "body": "updated body",
+          "bodyBytes": 12
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A4",
+        "method": "add",
+        "args": [
+          {
+            "title": "Default private preference",
+            "type": "preference",
+            "body": "p"
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-default-private-preference",
+          "deduped": false,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A4",
+        "method": "add",
+        "args": [
+          {
+            "title": "Explicit shared preference",
+            "type": "preference",
+            "body": "s",
+            "shared": true
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-explicit-shared-preference",
+          "deduped": false,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-B4",
+        "method": "search",
+        "args": [
+          "*"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [
+            {
+              "id": "d-2026-10-14-explicit-shared-preference",
+              "type": "preference",
+              "title": "Explicit shared preference",
+              "tags": "",
+              "confidence": 0.5,
+              "score": 0,
+              "snippet": "s"
+            }
+          ],
+          "total": 1,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "add",
+        "args": [
+          {
+            "title": "Orphan write",
+            "type": "howto",
+            "body": "b"
+          }
+        ]
+      },
+      "status": 500,
+      "json": {
+        "ok": false,
+        "error": "error:add() requires a viewer (the caller's account id); pass shared:true to write to the shared namespace\ncode:VALIDATION\nhelp:fix the input and retry; see help() for the write policy",
+        "name": "MemoryStoreError"
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A5",
+        "method": "add",
+        "args": [
+          {
+            "title": "Private alpha five",
+            "type": "decision",
+            "body": "b"
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-private-alpha-five",
+          "deduped": false,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A5",
+        "method": "add",
+        "args": [
+          {
+            "title": "Shared beta five",
+            "type": "decision",
+            "body": "b",
+            "shared": true
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-shared-beta-five",
+          "deduped": false,
+          "commit": "pending"
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "search",
+        "args": [
+          "*"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [
+            {
+              "id": "d-2026-10-14-shared-beta-five",
+              "type": "decision",
+              "title": "Shared beta five",
+              "tags": "",
+              "confidence": 0.5,
+              "score": 0,
+              "snippet": "b"
+            }
+          ],
+          "total": 1,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "stats",
+        "args": []
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "total": 1,
+          "byType": {
+            "constraint": 0,
+            "decision": 1,
+            "failure": 0,
+            "howto": 0,
+            "preference": 0
+          },
+          "lastSync": "",
+          "dirty": 0,
+          "repoOk": true,
+          "semantic": false
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "add",
+        "args": [
+          {
+            "title": "Viewerless shared write",
+            "type": "howto",
+            "body": "b",
+            "shared": true
+          }
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-viewerless-shared-write",
+          "deduped": false,
+          "commit": ""
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "add",
+        "args": [
+          {
+            "title": "Directly written private row",
+            "type": "howto",
+            "body": "b"
+          },
+          "acct-A6"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "id": "d-2026-10-14-directly-written-private-row",
+          "deduped": false,
+          "commit": ""
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "search",
+        "args": [
+          "*",
+          null,
+          "acct-B6"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [],
+          "total": 0,
+          "truncated": false,
+          "hint": "0 memories found matching '*' — try broader terms, or add() to record what you learned"
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "search",
+        "args": [
+          "*",
+          null,
+          "acct-A6"
+        ]
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": {
+          "results": [
+            {
+              "id": "d-2026-10-14-directly-written-private-row",
+              "type": "howto",
+              "title": "Directly written private row",
+              "tags": "",
+              "confidence": 0.5,
+              "score": 0,
+              "snippet": "b"
+            }
+          ],
+          "total": 1,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "path": "/storage",
+      "body": {
+        "method": "get",
+        "args": [
+          "d-2026-10-14-directly-written-private-row",
+          null,
+          "acct-B6"
+        ]
+      },
+      "status": 500,
+      "json": {
+        "ok": false,
+        "error": "error:no memory with id d-2026-10-14-directly-written-private-row\ncode:NOT_FOUND\nhelp:list ids with search('*') or stats(); ids are d-YYYY-MM-DD-<slug>",
+        "name": "MemoryStoreError"
+      }
+    },
+    {
+      "path": "/vendor",
+      "body": {},
+      "status": 200,
+      "json": {
+        "ok": true,
+        "vendorDescription": {
+          "displayName": "Memory",
+          "url": "https://workers.cloudflare.com/",
+          "logo": {
+            "url": "data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20256%20256'%20fill%3D'currentColor'%3E%3Cpath%20d%3D'M232%2C128a56%2C56%2C0%2C0%2C1-32%2C50.6A56%2C56%2C0%2C0%2C1%2C96%2C196v-4a52%2C52%2C0%2C0%2C1-45.3-26.4A48%2C48%2C0%2C0%2C1%2C32%2C72a48.6%2C48.6%2C0%2C0%2C1%2C8-.7A56%2C56%2C0%2C0%2C1%2C144%2C40h16a56%2C56%2C0%2C0%2C1%2C56%2C56v4A56%2C56%2C0%2C0%2C1%2C232%2C128Z'%2F%3E%3C%2Fsvg%3E"
+          },
+          "tagline": "Durable cross-session agent memory",
+          "description": "Search, record, and update durable cross-session memories (decisions, failures, how-tos, constraints, preferences), mirrored to a git repository you can clone. Enable this feature to let agents remember what they learn across sessions.",
+          "autoProvisionsAccount": true,
+          "providesAuth": false
+        },
+        "accountDescription": {
+          "displayName": "Memory",
+          "avatar": {
+            "url": "data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20256%20256'%20fill%3D'currentColor'%3E%3Cpath%20d%3D'M232%2C128a56%2C56%2C0%2C0%2C1-32%2C50.6A56%2C56%2C0%2C0%2C1%2C96%2C196v-4a52%2C52%2C0%2C0%2C1-45.3-26.4A48%2C48%2C0%2C0%2C1%2C32%2C72a48.6%2C48.6%2C0%2C0%2C1%2C8-.7A56%2C56%2C0%2C0%2C1%2C144%2C40h16a56%2C56%2C0%2C0%2C1%2C56%2C56v4A56%2C56%2C0%2C0%2C1%2C232%2C128Z'%2F%3E%3C%2Fsvg%3E"
+          },
+          "singleton": {
+            "tsType": "MemoryStore"
+          }
+        }
+      }
+    },
+    {
+      "path": "/call",
+      "body": {
+        "accountId": "acct-A7",
+        "method": "help",
+        "args": []
+      },
+      "status": 200,
+      "json": {
+        "ok": true,
+        "result": "Memory Store — durable cross-session memories (decisions, failures, how-tos, constraints, preferences).\n\nMethods:\n  search(query, opts?) — literal substring search over title+body; opts: {type, tag, limit (default 10, max 50), regex}\n    regex:true treats query as /pattern/ vs title+body\n  get(id, opts?) — fetch one memory; body truncated to 1500 chars unless {full:true}\n  add({title, type, body, tags?, confidence?, scope?}) — record a memory; idempotent (dedups on near-identical titles)\n  update(id, {title?, body?, tags?, confidence?}) — bump version and push\n  delete(id) — idempotent removal\n  stats() — totals, sync health, outbox depth\n\nWrite policy:\n  Belongs: durable facts, decisions with rationale, constraints, how-tos, failures with root cause, preferences, env gotchas.\n  Not: transient state, scratch, conversation recap, large code bodies, repo-tracked things, PII beyond identity strings.\n  Secrets NEVER: token/key/password/API-key/Bearer patterns are scanned and refused.\n\nNamespaces:\n  add() records privately to your account by default; pass shared:true to record account-wide.\n  search/get/stats see the shared namespace plus your own private memories — never another account's.\n\nCall search() FIRST to avoid re-deriving known facts; add() to persist what you learned.\nIds look like d-YYYY-MM-DD-<slug>; find them with search('*') or stats()."
+      }
+    }
+  ]
+}

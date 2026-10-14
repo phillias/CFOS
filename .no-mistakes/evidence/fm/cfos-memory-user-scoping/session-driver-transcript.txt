@@ -1,0 +1,13 @@
+
+[scenario] Agent sessions of two accounts: private memory is scoped, shared is visible
+  PASS  session A queued one action
+  PASS  pending op carries A's viewer
+  PASS  session B search sees 0
+  PASS  session B get throws NOT_FOUND
+  PASS  session B stats total 0
+  PASS  session A search sees 1
+  PASS  session A get reads it
+  PASS  shared pending op flags shared:true
+  PASS  session B sees the shared memory
+
+ALL SESSION CHECKS PASSED
