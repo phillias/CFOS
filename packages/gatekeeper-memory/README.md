@@ -1,10 +1,12 @@
 # Memory Gatekeeper
 
-Durable, account-global agent memory: decisions with rationale, failures with root causes,
-how-tos, constraints, and preferences, stored as markdown in one Git repository on
+Durable agent memory: decisions with rationale, failures with root causes, how-tos, constraints,
+and preferences, stored as markdown in one Git repository on
 [Cloudflare Artifacts](https://developers.cloudflare.com/artifacts/) and mirrored into a SQLite
-Durable Object for fast reads. Agents reach it through the `MEMORY` binding; humans can clone the
-repository and edit memories with any Git client.
+Durable Object for fast reads. Each account gets a private namespace, plus one shared namespace
+for the whole sharing boundary — visibility is enforced at the storage layer, not by convention.
+Agents reach it through the `MEMORY` binding; humans can clone the repository and edit memories
+with any Git client.
 
 ## Architecture
 
@@ -13,13 +15,15 @@ Two Durable Object classes, both in this Worker:
 - **`MemoryGatekeeper`** — the `Gatekeeper<MemorySession>` facet the Workshop instantiates per
   account (the same role `ContextGatekeeper` plays for Context). It holds the pending-write store
   for the action queue and forwards everything else to storage.
-- **`MemoryStorage`** — the shared store, keyed by `sharingDomain` and reached via
-  `ctx.exports.MemoryStorage.getByName(...)`, so every account in a sharing boundary sees one store.
+- **`MemoryStorage`** — the physical store, keyed by `sharingDomain` and reached via
+  `ctx.exports.MemoryStorage.getByName(...)`, so every account in a sharing boundary shares one
+  index and one Git repo; it hosts every account's private namespace plus the shared namespace.
 
 The split exists because facet identity is per (parent Durable Object, facet name): a facet cannot
-globalize itself through props. A single facet class would have given each user a private store,
-which is the opposite of the design — one account-wide memory. `MemoryStorage` is the globalizing
-move; `MemoryGatekeeper` stays per-user exactly like the rest of the Gatekeeper family.
+globalize itself through props, and one physical store is what all namespaces share. A per-user
+facet alone would have split the index and the repo; `MemoryStorage` is the globalizing move, and
+`MemoryGatekeeper` stays per-user exactly like the rest of the Gatekeeper family, carrying the
+account id that names each session's viewer.
 
 `MemoryStorage` owns:
 
@@ -27,8 +31,22 @@ move; `MemoryGatekeeper` stays per-user exactly like the rest of the Gatekeeper 
   via `ctx.storage.sql` on first use,
 - the Git mirror at `/tmp/memory/agent-memories` (isomorphic-git, clone/fetch/push with
   short-lived repo-scoped tokens minted per operation and revoked in `finally`),
-- a 15-minute alarm that refreshes the mirror, retries outbox writes, and (in v2) backfills
-  embeddings.
+- a 15-minute alarm that refreshes the mirror, retries outbox writes, and (once semantic search
+  ships) backfills embeddings.
+
+## Namespaces: private + shared
+
+Every memory carries an `owner`: an empty owner is the shared namespace (visible to every
+account); an account id is that account's private namespace. The session passes its account id as
+the viewer on every read and write, and visibility is enforced in the SQL layer — a private
+memory is unreachable through any store method by construction. Writes are private by default;
+`add()` with `shared: true` records into the shared namespace. Reads fail closed: without a
+viewer, only the shared namespace is visible.
+
+Data written by v1 (which predates namespaces and was account-wide by design) migrates to the
+shared namespace on first use — in SQLite via an `ALTER TABLE` that adds the `owner` column, and
+in Git by reading files without an `owner` frontmatter field as shared. The migration is
+lossless: no v1 memory becomes invisible to its deployment.
 
 ## The agent surface
 
@@ -71,23 +89,23 @@ Tokens are minted in the Artifacts dashboard, up to one year of validity. Every 
 
 ## Deployment and setup
 
-This PR ships the Worker package itself, unbound. The starter-wrapper wiring — binding the Worker
-as `GATEKEEPER_MEMORY` on the Workshop (`GatekeeperVendor` entrypoint) and on the router (no
-entrypoint), and adding the `ARTIFACTS` and `AI` bindings plus the `MEMORY_SEMANTIC` var — ships
-in a separate starter PR afterwards. Until that wiring lands, the Worker is not bound to any
-deployment and no Memory account is provisioned.
+The starter wires this Worker into the deployment: the `GATEKEEPER_MEMORY` service binding on the
+Workshop (with the `GatekeeperVendor` entrypoint, carrying the `sharingDomain` prop) and on the
+router (no entrypoint), plus the `ARTIFACTS` and `AI` bindings and the `MEMORY_SEMANTIC` var on
+the memory Worker itself. Memory shares the Context gatekeeper's `sharingDomain` boundary, so one
+sharing domain sees one store.
 
-Once bound, the repository (`agent-memories` in the `cfos-memory` namespace) is created on first
+The repository (`agent-memories` in the `cfos-memory` namespace) is created on first
 use. Then open `/admin` and set the **Memory** Gatekeeper to enabled (or optional) — vendor
 discovery is binding-driven, but accounts are only auto-provisioned for enabled vendors. Users
 then approve memory writes individually or via the always-allow rule for `memory.write`.
 
-## v2: semantic search (not yet shipped)
+## Semantic search (not yet shipped)
 
 The `embedding`/`embedded_at` columns, the `embedding_meta` table, and the `MEMORY_SEMANTIC` var
 are scaffolding for embedding-backed search (`@cf/baai/bge-small-en-v1.5` through the `AI`
-binding). v1 ships literal search only with `MEMORY_SEMANTIC: "false"`; flipping the var before v2
-exists does nothing.
+binding). The shipped store does literal search only with `MEMORY_SEMANTIC: "false"`; flipping the
+var before semantic search ships does nothing.
 
 ## Development
 

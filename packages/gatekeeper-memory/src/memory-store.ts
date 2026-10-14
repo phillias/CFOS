@@ -1,7 +1,12 @@
-// MemoryStoreCore: the logic of the account-wide memory store over an injected SQL database and
+// MemoryStoreCore: the logic of the shared memory store over an injected SQL database and
 // git repo mirror. All §7 methods live here; the MemoryStorage Durable Object wraps this class
 // with ctx.storage.sql and the Artifacts git client. Node tests instantiate it with node:sqlite
 // and a mock repo.
+//
+// Namespaces: every row carries an owner — '' is the shared namespace (visible to every
+// account), an account id is that account's private namespace. Every read and write takes the
+// caller's account id (viewer) and enforces visibility in the SQL layer, so a private memory
+// is unreachable through any store method by construction, not by convention.
 
 import {
   MEMORY_TYPES,
@@ -134,6 +139,13 @@ function syncConflict(): MemoryStoreError {
   );
 }
 
+/**
+ * The namespace-visibility SQL predicate: a row is visible to a viewer when it lives in
+ * the shared namespace (owner = '') or in the viewer's own private namespace. An empty
+ * viewer matches shared rows only — reads fail closed, never open.
+ */
+const VISIBLE_TO = "(owner = '' OR owner = ?)";
+
 // ---------------------------------------------------------------------------
 // Public result types (the MemoryStore RPC surface)
 // ---------------------------------------------------------------------------
@@ -195,9 +207,17 @@ export interface MemoryStats {
   semantic: boolean;
 }
 
+/**
+ * The store surface. Every method that reads or writes memory rows takes a trailing
+ * `viewer` (the caller's account id): it names the private namespace the call acts in.
+ * Visibility is enforced in the SQL layer — a call can only ever see rows whose owner is
+ * '' (the shared namespace) or the viewer's own account id. An empty viewer sees the
+ * shared namespace only (fail-closed), and add() without a viewer is refused unless it
+ * explicitly writes to the shared namespace via {shared: true}.
+ */
 export interface MemoryStore {
-  search(query: string, opts?: { type?: string; tag?: string; limit?: number; regex?: boolean }): Promise<MemorySearchResult>;
-  get(id: string, opts?: { full?: boolean }): Promise<MemoryGetResult>;
+  search(query: string, opts?: { type?: string; tag?: string; limit?: number; regex?: boolean }, viewer?: string): Promise<MemorySearchResult>;
+  get(id: string, opts?: { full?: boolean }, viewer?: string): Promise<MemoryGetResult>;
   add(args: {
     title: string;
     type: string;
@@ -206,13 +226,16 @@ export interface MemoryStore {
     confidence?: number;
     author?: string;
     scope?: string;
-  }): Promise<MemoryAddResult>;
+    /** true = shared namespace (visible to every account); default false = private to viewer. */
+    shared?: boolean;
+  }, viewer?: string): Promise<MemoryAddResult>;
   update(id: string, patch: {
     title?: string; body?: string; tags?: string | string[]; confidence?: number;
-  }): Promise<MemoryUpdateResult>;
-  delete(id: string): Promise<MemoryDeleteResult>;
-  stats(): Promise<MemoryStats>;
+  }, viewer?: string): Promise<MemoryUpdateResult>;
+  delete(id: string, viewer?: string): Promise<MemoryDeleteResult>;
+  stats(viewer?: string): Promise<MemoryStats>;
   help(): Promise<string>;
+  dedupCheck(title: string, viewer?: string): Promise<{ deduped: boolean; mergedInto?: string; commit: string }>;
 }
 
 // ---------------------------------------------------------------------------
@@ -235,6 +258,7 @@ interface MemoryRow {
   updated_at: string;
   author: string;
   scope: string;
+  owner: string;
   embedding: ArrayBuffer | null;
   embedded_at: string | null;
 }
@@ -252,7 +276,7 @@ interface OutboxRow {
 // Store core
 // ---------------------------------------------------------------------------
 
-export const SCHEMA_VERSION = "1";
+export const SCHEMA_VERSION = "2";
 export const GIT_REFRESH_MIN_INTERVAL_MS = 60_000;
 export const MEMORY_REPO_NAME = "agent-memories";
 export const MEMORY_BRANCH = "main";
@@ -300,11 +324,13 @@ export class MemoryStoreCore implements MemoryStore {
         updated_at TEXT NOT NULL,
         author TEXT NOT NULL DEFAULT '',
         scope TEXT NOT NULL DEFAULT '',
+        owner TEXT NOT NULL DEFAULT '',
         embedding BLOB,
         embedded_at TEXT
       )`,
       `CREATE INDEX IF NOT EXISTS idx_memories_type ON memories(type)`,
       `CREATE INDEX IF NOT EXISTS idx_memories_updated ON memories(updated_at DESC)`,
+      `CREATE INDEX IF NOT EXISTS idx_memories_owner ON memories(owner)`,
       `CREATE TABLE IF NOT EXISTS sync_state (key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
       `CREATE TABLE IF NOT EXISTS embedding_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
       `CREATE TABLE IF NOT EXISTS write_outbox (
@@ -318,6 +344,14 @@ export class MemoryStoreCore implements MemoryStore {
       for (let sql of ddl) {
         this.#db.exec(sql);
       }
+    }
+    // v1 → v2 migration: v1 had no owner column. Existing rows migrate to the shared
+    // namespace (owner = '') — lossless, since v1 memories were account-wide by design.
+    let table = this.#db.exec<{ sql: string | null }>(
+      "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'memories'",
+    ).toArray();
+    if (table.length > 0 && !(table[0].sql ?? "").includes("owner")) {
+      this.#db.exec("ALTER TABLE memories ADD COLUMN owner TEXT NOT NULL DEFAULT ''");
     }
     this.#db.exec(
       "INSERT OR REPLACE INTO sync_state (key, value) VALUES ('schemaVersion', ?)",
@@ -427,11 +461,11 @@ export class MemoryStoreCore implements MemoryStore {
         this.#db.exec(
           `INSERT OR REPLACE INTO memories
            (id, type, title, tags, confidence, version, body, body_bytes, path, commit_hash,
-            created_at, updated_at, author, scope)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             created_at, updated_at, author, scope, owner)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           fm.id, fm.type, fm.title, fm.tags, fm.confidence, fm.version,
           parsed.body, bodyBytes, path, commit,
-          fm.created, fm.updated, fm.author, fm.scope,
+          fm.created, fm.updated, fm.author, fm.scope, fm.owner,
         );
       }
       this.#setSyncState("commit", commit);
@@ -467,12 +501,14 @@ export class MemoryStoreCore implements MemoryStore {
     for (let row of rows) {
       try {
         let payload = JSON.parse(row.payload);
+        // Legacy (v1) payloads carry no viewer: replay into the shared namespace, matching
+        // the v1→v2 migration for already-written data.
         if (row.op === "add") {
-          await this.#doAdd(payload.args ?? payload);
+          await this.#doAdd(payload.args ?? payload, payload.viewer ?? "");
         } else if (row.op === "update") {
-          await this.#doUpdate(payload.id, payload.patch);
+          await this.#doUpdate(payload.id, payload.patch, payload.viewer ?? "");
         } else if (row.op === "delete") {
-          await this.#doDelete(payload.id);
+          await this.#doDelete(payload.id, payload.viewer ?? "");
         }
         this.#db.exec("DELETE FROM write_outbox WHERE id = ?", row.id);
       } catch (err) {
@@ -522,6 +558,7 @@ export class MemoryStoreCore implements MemoryStore {
   async search(
     query: string,
     opts?: { type?: string; tag?: string; limit?: number; regex?: boolean },
+    viewer = "",
   ): Promise<{
     results: Array<{
       id: string; type: string; title: string; tags: string;
@@ -558,7 +595,10 @@ export class MemoryStoreCore implements MemoryStore {
       conditions.push("(tags = ? OR tags LIKE ? OR tags LIKE ? OR tags LIKE ?)");
       bindings.push(tag, `${tag},%`, `%,${tag}`, `%,${tag},%`);
     }
-    let where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+    // Namespace filter — enforced in SQL, so a private memory can never surface to another viewer.
+    conditions.push(VISIBLE_TO);
+    bindings.push(viewer);
+    let where = `WHERE ${conditions.join(" AND ")}`;
     let rows = this.#db.exec<MemoryRow>(
       `SELECT * FROM memories ${where} ORDER BY updated_at DESC LIMIT 500`,
       ...bindings,
@@ -615,7 +655,7 @@ export class MemoryStoreCore implements MemoryStore {
     return { results, total, truncated, hint };
   }
 
-  async get(id: string, opts?: { full?: boolean }): Promise<{
+  async get(id: string, opts?: { full?: boolean }, viewer = ""): Promise<{
     id: string; type: string; title: string; tags: string;
     confidence: number; version: number; updated: string; author: string;
     body: string; bodyBytes: number; hint?: string;
@@ -623,7 +663,8 @@ export class MemoryStoreCore implements MemoryStore {
     this.#ensureSchema();
     await this.ensureFresh();
     let rows = this.#db.exec<MemoryRow>(
-      "SELECT * FROM memories WHERE id = ?", id,
+      `SELECT * FROM memories WHERE id = ? AND ${VISIBLE_TO}`,
+      id, viewer,
     ).toArray();
     if (rows.length === 0) throw notFound(id);
     let row = rows[0];
@@ -651,22 +692,22 @@ export class MemoryStoreCore implements MemoryStore {
 
   /**
    * Dedup pre-check without writing: normalized-title Jaccard ≥ threshold against recent
-   * candidates. Used by the session pre-approval and by add() itself.
+   * candidates the viewer can see. Used by the session pre-approval and by add() itself.
    */
-  async dedupCheck(title: string): Promise<{ deduped: boolean; mergedInto?: string; commit: string }> {
+  async dedupCheck(title: string, viewer = ""): Promise<{ deduped: boolean; mergedInto?: string; commit: string }> {
     this.#ensureSchema();
     await this.ensureFresh();
-    let hit = this.#findDuplicate(title);
+    let hit = this.#findDuplicate(title, viewer);
     if (hit) {
       return { deduped: true, mergedInto: hit.id, commit: this.#lastCommit };
     }
     return { deduped: false, commit: this.#lastCommit };
   }
 
-  #findDuplicate(title: string): MemoryRow | null {
+  #findDuplicate(title: string, viewer: string): MemoryRow | null {
     let candidates = this.#db.exec<MemoryRow>(
-      "SELECT * FROM memories ORDER BY updated_at DESC LIMIT ?",
-      DEDUP_PRESEARCH_LIMIT * 10,
+      `SELECT * FROM memories WHERE ${VISIBLE_TO} ORDER BY updated_at DESC LIMIT ?`,
+      viewer, DEDUP_PRESEARCH_LIMIT * 10,
     ).toArray();
     let lowerTitle = title.toLowerCase();
     let prefiltered = candidates.filter(
@@ -688,15 +729,21 @@ export class MemoryStoreCore implements MemoryStore {
     confidence?: number;
     author?: string;
     scope?: string;
-  }): Promise<{ id: string; deduped: boolean; mergedInto?: string; commit: string }> {
+    shared?: boolean;
+  }, viewer = ""): Promise<{ id: string; deduped: boolean; mergedInto?: string; commit: string }> {
     this.#ensureSchema();
     await this.ensureFresh();
+    // Fail closed: a viewerless write may only land in the shared namespace, and only when
+    // the caller asks for that explicitly.
+    if (!viewer && !args.shared) {
+      throw validation("add() requires a viewer (the caller's account id); pass shared:true to write to the shared namespace");
+    }
     try {
-      return await this.#doAdd(args);
+      return await this.#doAdd(args, viewer);
     } catch (err) {
       // Caller errors (validation, secrets, not-found) are not repo failures — don't queue.
       if (err instanceof MemoryStoreError) throw err;
-      this.#enqueueOutbox("add", { args });
+      this.#enqueueOutbox("add", { args, viewer });
       if (err instanceof Error && err.name === "SyncConflictError") {
         throw syncConflict();
       }
@@ -713,7 +760,8 @@ export class MemoryStoreCore implements MemoryStore {
     confidence?: number;
     author?: string;
     scope?: string;
-  }): Promise<{ id: string; deduped: boolean; mergedInto?: string; commit: string }> {
+    shared?: boolean;
+  }, viewer: string): Promise<{ id: string; deduped: boolean; mergedInto?: string; commit: string }> {
     // Validate
     let titleError = validateTitle(args.title);
     if (titleError) throw validation(titleError);
@@ -732,7 +780,7 @@ export class MemoryStoreCore implements MemoryStore {
     if (finding) throw secretRefused(finding);
 
     // Dedup check: literal pre-search on title, then Jaccard ≥0.85
-    let duplicate = this.#findDuplicate(args.title);
+    let duplicate = this.#findDuplicate(args.title, viewer);
     if (duplicate) {
       return {
         id: duplicate.id,
@@ -753,9 +801,12 @@ export class MemoryStoreCore implements MemoryStore {
 
     let now = this.#isoNow();
     let path = `objects/${args.type}/${id}.md`;
+    // Namespace: shared writes live in the shared namespace (owner = ''); everything else
+    // is private to the viewer's account.
+    let owner = args.shared ? "" : viewer;
     let fm: MemoryFrontmatter = {
       id, type: args.type as MemoryType, title: args.title, tags,
-      confidence, version: 1, created: now, updated: now, author, scope,
+      confidence, version: 1, created: now, updated: now, author, scope, owner,
     };
     let content = serializeMemoryFile(fm, args.body);
 
@@ -776,25 +827,25 @@ export class MemoryStoreCore implements MemoryStore {
     this.#db.exec(
       `INSERT OR REPLACE INTO memories
        (id, type, title, tags, confidence, version, body, body_bytes, path, commit_hash,
-        created_at, updated_at, author, scope)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         created_at, updated_at, author, scope, owner)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       fm.id, fm.type, fm.title, fm.tags, fm.confidence, fm.version,
       body, bodyBytes, path, commit,
-      fm.created, fm.updated, fm.author, fm.scope,
+      fm.created, fm.updated, fm.author, fm.scope, fm.owner,
     );
   }
 
   async update(id: string, patch: {
     title?: string; body?: string; tags?: string | string[];
     confidence?: number;
-  }): Promise<{ id: string; version: number; commit: string }> {
+  }, viewer = ""): Promise<{ id: string; version: number; commit: string }> {
     this.#ensureSchema();
     await this.ensureFresh();
     try {
-      return await this.#doUpdate(id, patch);
+      return await this.#doUpdate(id, patch, viewer);
     } catch (err) {
       if (err instanceof MemoryStoreError) throw err;
-      this.#enqueueOutbox("update", { id, patch });
+      this.#enqueueOutbox("update", { id, patch, viewer });
       if (err instanceof Error && err.name === "SyncConflictError") {
         throw syncConflict();
       }
@@ -806,9 +857,10 @@ export class MemoryStoreCore implements MemoryStore {
   async #doUpdate(id: string, patch: {
     title?: string; body?: string; tags?: string | string[];
     confidence?: number;
-  }): Promise<{ id: string; version: number; commit: string }> {
+  }, viewer: string): Promise<{ id: string; version: number; commit: string }> {
     let rows = this.#db.exec<MemoryRow>(
-      "SELECT * FROM memories WHERE id = ?", id,
+      `SELECT * FROM memories WHERE id = ? AND ${VISIBLE_TO}`,
+      id, viewer,
     ).toArray();
     if (rows.length === 0) throw notFound(id);
     let row = rows[0];
@@ -838,6 +890,7 @@ export class MemoryStoreCore implements MemoryStore {
       updated: now,
       author: row.author,
       scope: row.scope,
+      owner: row.owner,
     };
     let content = serializeMemoryFile(fm, newBody);
 
@@ -852,14 +905,14 @@ export class MemoryStoreCore implements MemoryStore {
     return { id, version: newVersion, commit };
   }
 
-  async delete(id: string): Promise<{ id: string; deleted: true; commit: string }> {
+  async delete(id: string, viewer = ""): Promise<{ id: string; deleted: true; commit: string }> {
     this.#ensureSchema();
     await this.ensureFresh();
     try {
-      return await this.#doDelete(id);
+      return await this.#doDelete(id, viewer);
     } catch (err) {
       if (err instanceof MemoryStoreError) throw err;
-      this.#enqueueOutbox("delete", { id });
+      this.#enqueueOutbox("delete", { id, viewer });
       if (err instanceof Error && err.name === "SyncConflictError") {
         throw syncConflict();
       }
@@ -868,9 +921,10 @@ export class MemoryStoreCore implements MemoryStore {
   }
 
   /** Core delete: push removal → drop index row. Idempotent; never touches the outbox. */
-  async #doDelete(id: string): Promise<{ id: string; deleted: true; commit: string }> {
+  async #doDelete(id: string, viewer: string): Promise<{ id: string; deleted: true; commit: string }> {
     let rows = this.#db.exec<MemoryRow>(
-      "SELECT * FROM memories WHERE id = ?", id,
+      `SELECT * FROM memories WHERE id = ? AND ${VISIBLE_TO}`,
+      id, viewer,
     ).toArray();
     // Idempotent: deleting a missing memory is a no-op success
     if (rows.length === 0) {
@@ -888,7 +942,7 @@ export class MemoryStoreCore implements MemoryStore {
     return { id, deleted: true, commit };
   }
 
-  async stats(): Promise<{
+  async stats(viewer = ""): Promise<{
     total: number;
     byType: Record<string, number>;
     lastSync: string;
@@ -899,12 +953,12 @@ export class MemoryStoreCore implements MemoryStore {
     this.#ensureSchema();
     await this.ensureFresh();
     let total = this.#db.exec<{ n: number }>(
-      "SELECT COUNT(*) as n FROM memories",
+      `SELECT COUNT(*) as n FROM memories WHERE ${VISIBLE_TO}`, viewer,
     ).toArray()[0].n;
     let byType: Record<string, number> = {};
     for (let type of MEMORY_TYPES) byType[type] = 0;
     let typeRows = this.#db.exec<{ type: string; n: number }>(
-      "SELECT type, COUNT(*) as n FROM memories GROUP BY type",
+      `SELECT type, COUNT(*) as n FROM memories WHERE ${VISIBLE_TO} GROUP BY type`, viewer,
     ).toArray();
     for (let r of typeRows) byType[r.type] = r.n;
     let lastSync = this.#getSyncState("lastFetchAt") ?? "";
@@ -936,6 +990,10 @@ export class MemoryStoreCore implements MemoryStore {
       "  Not: transient state, scratch, conversation recap, large code bodies, repo-tracked things, PII beyond identity strings.",
       "  Secrets NEVER: token/key/password/API-key/Bearer patterns are scanned and refused.",
       "",
+      "Namespaces:",
+      "  add() records privately to your account by default; pass shared:true to record account-wide.",
+      "  search/get/stats see the shared namespace plus your own private memories — never another account's.",
+      "",
       "Call search() FIRST to avoid re-deriving known facts; add() to persist what you learned.",
       "Ids look like d-YYYY-MM-DD-<slug>; find them with search('*') or stats().",
     ].join("\n");
@@ -952,7 +1010,10 @@ export const MEMORY_STORE_TYPES = `
  * Call search() before re-deriving known facts; add() to persist durable learnings.
  */
 interface MemoryStore {
-  /** Literal substring search over title+body, relevance-ranked. Each call records an observation. */
+  /**
+   * Literal substring search over title+body, relevance-ranked. Each call records an observation.
+   * Sees the shared namespace plus your account's private memories — never another account's.
+   */
   search(query: string, opts?: {
     type?: "constraint" | "decision" | "failure" | "howto" | "preference";
     tag?: string;
@@ -966,14 +1027,20 @@ interface MemoryStore {
     total: number; truncated: boolean; hint?: string;
   }>;
 
-  /** Read one memory by id. Body truncated to 1500 chars unless {full:true}. */
+  /**
+   * Read one memory by id. Body truncated to 1500 chars unless {full:true}.
+   * Only memories visible to your account (shared + your own private) can be read.
+   */
   get(id: string, opts?: { full?: boolean }): Promise<{
     id: string; type: string; title: string; tags: string;
     confidence: number; version: number; updated: string; author: string;
     body: string; bodyBytes: number; hint?: string;
   }>;
 
-  /** Record a memory. Idempotent: near-identical titles dedup (Jaccard >= 0.85) as a no-op. */
+  /**
+   * Record a memory. Idempotent: near-identical titles dedup (Jaccard >= 0.85) as a no-op.
+   * Private to your account by default; pass shared:true to record account-wide.
+   */
   add(args: {
     title: string;   // <= 200 chars
     type: "constraint" | "decision" | "failure" | "howto" | "preference";
@@ -981,17 +1048,18 @@ interface MemoryStore {
     tags?: string | string[];
     confidence?: number;  // 0..1, default 0.5
     scope?: string;
+    shared?: boolean;     // true = shared namespace (visible to every account); default: private to you
   }): Promise<{ id: string; deduped: boolean; mergedInto?: string; commit: string }>;
 
-  /** Update a memory; bumps version. */
+  /** Update a memory visible to your account; bumps version. */
   update(id: string, patch: {
     title?: string; body?: string; tags?: string | string[]; confidence?: number;
   }): Promise<{ id: string; version: number; commit: string }>;
 
-  /** Delete a memory. Idempotent. */
+  /** Delete a memory visible to your account. Idempotent. */
   delete(id: string): Promise<{ id: string; deleted: true; commit: string }>;
 
-  /** Store health: totals, sync status, outbox depth. */
+  /** Store health: totals, sync status, outbox depth — counted over what your account can see. */
   stats(): Promise<{
     total: number; byType: Record<string, number>; lastSync: string;
     dirty: number; repoOk: boolean; semantic: boolean;

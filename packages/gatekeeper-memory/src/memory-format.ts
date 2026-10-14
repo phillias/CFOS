@@ -174,6 +174,8 @@ export interface MemoryFrontmatter {
   updated: string;
   author: string;
   scope: string;
+  /** Namespace owner: '' = shared (visible to every account), an account id = private. */
+  owner: string;
 }
 
 /** Serialize a memory record to its on-disk markdown form (frontmatter + body). */
@@ -189,6 +191,7 @@ export function serializeMemoryFile(fm: MemoryFrontmatter, body: string): string
     updated: fm.updated,
     author: fm.author,
     scope: fm.scope,
+    owner: fm.owner,
   });
   return `---\n${yaml.trimEnd()}\n---\n\n${body}\n`;
 }
@@ -213,6 +216,8 @@ export function parseMemoryFile(content: string): { fm: MemoryFrontmatter; body:
         updated: raw.updated ?? "",
         author: raw.author ?? "",
         scope: raw.scope ?? "",
+        // v1 files carry no owner: they default to the shared namespace (lossless migration).
+        owner: raw.owner ?? "",
       },
       body: m[2].replace(/^\n/, "").replace(/\n$/, ""),
     };
