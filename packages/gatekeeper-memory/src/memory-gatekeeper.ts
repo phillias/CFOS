@@ -211,7 +211,9 @@ export class MemoryGatekeeper
     // REPO_UNAVAILABLE / SYNC_CONFLICT already queued the write in the outbox inside the store;
     // rethrow so the workshop records the failure on the action.
     // The replay runs as the op's originating account (viewer), so it stays inside that
-    // account's namespaces; ops recorded before the viewer field existed replay as shared.
+    // account's namespaces. Pending ops carry their viewer; an op recorded before the viewer
+    // field existed (still pending across the v1→v2 deploy) has no viewer and fails validation
+    // rather than replaying as shared. Only the store-core outbox replays legacy payloads.
     if (op.kind === "add" && op.addArgs) {
       await storage.add(op.addArgs, op.viewer);
     } else if (op.kind === "update" && op.updateArgs) {
