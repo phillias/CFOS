@@ -107,7 +107,7 @@ export class MemoryAccount
     return null;
   }
   async getVerifier(): Promise<Fetcher<never>> {
-    // No observer verification: the store is account-wide and reached only via ambient bindings.
+    // No observer verification: the store is reached only via ambient bindings.
     throw new Error("Memory has no observer verifier.");
   }
 }
@@ -233,7 +233,7 @@ export class MemoryGatekeeper
     throw new Error("Memory writes cannot be reverted after commit; use update() or delete() instead.");
   }
 
-  /** No observer verification: the store is account-wide and reached only via ambient bindings. */
+  /** No observer verification: the store is reached only via ambient bindings. */
   async addObserver(_id: string, _user: Fetcher<never>): Promise<void> {}
   async removeObserver(_id: string): Promise<void> {}
 }

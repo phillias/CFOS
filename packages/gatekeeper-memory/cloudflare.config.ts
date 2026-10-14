@@ -6,9 +6,9 @@ import {
   type WranglerExtras,
 } from "@gadgets/scripts/worker-config";
 
-// The Memory gatekeeper worker: an account-wide store of durable agent memories mirrored to a
-// Cloudflare Artifacts git repository. The ARTIFACTS, AI, and MEMORY_SEMANTIC bindings are added
-// at deploy time by the starter's deploy script, not here.
+// The Memory gatekeeper worker: a store of durable agent memories with per-account private and
+// shared namespaces, mirrored to a Cloudflare Artifacts git repository. The ARTIFACTS, AI, and
+// MEMORY_SEMANTIC bindings are added at deploy time by the starter's deploy script, not here.
 
 export default defineGadgetsWorker({
   name: "gatekeeper-memory",

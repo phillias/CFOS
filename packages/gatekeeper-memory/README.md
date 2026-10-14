@@ -31,8 +31,8 @@ account id that names each session's viewer.
   via `ctx.storage.sql` on first use,
 - the Git mirror at `/tmp/memory/agent-memories` (isomorphic-git, clone/fetch/push with
   short-lived repo-scoped tokens minted per operation and revoked in `finally`),
-- a 15-minute alarm that refreshes the mirror, retries outbox writes, and (in v2) backfills
-  embeddings.
+- a 15-minute alarm that refreshes the mirror, retries outbox writes, and (once semantic search
+  ships) backfills embeddings.
 
 ## Namespaces: private + shared
 
@@ -100,12 +100,12 @@ use. Then open `/admin` and set the **Memory** Gatekeeper to enabled (or optiona
 discovery is binding-driven, but accounts are only auto-provisioned for enabled vendors. Users
 then approve memory writes individually or via the always-allow rule for `memory.write`.
 
-## v2: semantic search (not yet shipped)
+## Semantic search (not yet shipped)
 
 The `embedding`/`embedded_at` columns, the `embedding_meta` table, and the `MEMORY_SEMANTIC` var
 are scaffolding for embedding-backed search (`@cf/baai/bge-small-en-v1.5` through the `AI`
-binding). v1 ships literal search only with `MEMORY_SEMANTIC: "false"`; flipping the var before v2
-exists does nothing.
+binding). The shipped store does literal search only with `MEMORY_SEMANTIC: "false"`; flipping the
+var before semantic search ships does nothing.
 
 ## Development
 
