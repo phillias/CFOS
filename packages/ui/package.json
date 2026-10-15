@@ -20,7 +20,7 @@
   },
   "peerDependencies": {
     "@cloudflare/kumo": "^2.14.0",
-    "react": "^19.2.8"
+    "react": "^19.3.0"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -29,12 +29,12 @@
   "devDependencies": {
     "@cloudflare/kumo": "^2.14.0",
     "@gadgets/scripts": "workspace:*",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "jsdom": "^26.1.0",
     "motion": "^13.4.2",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
