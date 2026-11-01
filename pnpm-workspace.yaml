@@ -36,7 +36,7 @@ catalog:
   vite-plus: ^1.0.0
   vitest: ^4.1.11
   wrangler: ^4.147.0
-  zod: ^4.6.5
+  zod: ^4.6.7
 
 overrides:
   # Keep the test pool's Wrangler/Miniflare/workerd stack aligned with the workspace toolchain.
